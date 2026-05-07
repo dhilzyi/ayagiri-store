@@ -12,7 +12,7 @@ import (
 
 const createProduct = `-- name: CreateProduct :one
 INSERT INTO
-  product (created_at, update_at, name, price, discount)
+  product (created_at, updated_at, name, price, discount)
 VALUEs
   (NOW(), NOW(), $1, $2, $3)
 RETURNING

@@ -4,20 +4,18 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"net/http"
 	"os"
+	"restaurant/internal/api"
+	"restaurant/internal/database"
 
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 )
 
 const (
-	NAME = "Ayagiri"
+	STORE_NAME = "Ayagiri"
 )
-
-type Handlers struct {
-	// db *database.
-	platform string
-}
 
 func main() {
 	godotenv.Load(".env")
@@ -27,9 +25,24 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	if err := db.Ping(); err != nil {
+		log.Fatal(err)
+	}
 
-	fmt.Println(db.Ping())
-	fmt.Println(db.Stats())
+	dbQueries := database.New(db)
+	handler := api.NewHandler(dbQueries, os.Getenv("PLATFORM"))
+	port := os.Getenv("PORT")
+	mux := http.NewServeMux()
+	srv := http.Server{
+		Addr:    port,
+		Handler: mux,
+	}
 
-	fmt.Println(dbUrl)
+	mux.HandleFunc("GET /product", handler.GETProducts)
+	mux.HandleFunc("POST /product", handler.POSTProduct)
+
+	fmt.Println("Server on 127.0.0.1" + port)
+	if err := srv.ListenAndServe(); err != nil {
+		log.Fatal(err)
+	}
 }

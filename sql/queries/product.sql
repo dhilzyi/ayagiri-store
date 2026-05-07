@@ -1,6 +1,6 @@
 -- name: CreateProduct :one
 INSERT INTO
-  product (created_at, update_at, name, price, discount)
+  product (created_at, updated_at, name, price, discount)
 VALUEs
   (NOW(), NOW(), $1, $2, $3)
 RETURNING
@@ -35,3 +35,12 @@ WHERE
 
 -- name: ResetProductRows :exec
 DELETE FROM product;
+
+-- name: UpdateProductByID :exec
+UPDATE product
+SET
+  updated_at = NOW(),
+  name = $1,
+  price = $2
+WHERE
+  id = $3;

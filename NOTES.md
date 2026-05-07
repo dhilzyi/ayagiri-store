@@ -27,3 +27,19 @@
         - ProductID
         - ProductName
         - Price
+
+## Stacks
+- POSTGRES
+
+- Golang Module
+    - github.com/joho/godotenv
+    - goose
+    - sqlc
+
+- Javascript and HTML vanilla
+
+### Commands
+psql "postgres://postgres:postgres@localhost:5432/ayagiri?sslmode=disable"
+
+goose -dir ./sql/schema postgres "postgres://postgres:postgres@localhost:5432/ayagiri" up
+

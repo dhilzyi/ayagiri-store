@@ -48,20 +48,6 @@ section {
   width: 70%;
 }
 
-.menu-section .product-item {
-  text-align: center;
-
-  background-color: darkgray;
-  width: 200px;
-  height: 100px;
-  margin: 10px;
-}
-
-.product-item h4 {
-  margin: 0;
-  padding: 0;
-}
-
 .category-bar {
   background-color: purple;
   height: 10%;
@@ -79,6 +65,38 @@ section {
   border: 2px solid black;
   white-space: nowrap;
   cursor: pointer;
+}
+
+.product-display {
+  display: grid;
+  /* grid-template-columns: repeat(3, 250px); */
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  justify-content: center;
+
+  padding: 30px;
+  gap: 50px;
+
+  overflow-y: auto;
+  max-height: 100vh;
+}
+
+.menu-section .product-item {
+  text-align: center;
+
+  background-color: darkgray;
+  width: 250px;
+  height: 150px;
+
+  flex-direction: column;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.product-item h3,
+.product-item h4 {
+  margin: 0;
+  padding: 0;
 }
 
 /* ORDER SECTIONS */

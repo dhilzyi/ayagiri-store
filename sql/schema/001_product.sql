@@ -4,6 +4,7 @@ CREATE TABLE product (
   created_at TIMESTAMP NOT NULL,
   updated_at TIMESTAMP NOT NULL,
   name TEXT NOT NULL,
+  romaji_name TEXT NOT NULL,
   price INT NOT NULL,
   discount INT DEFAULT 0
 );

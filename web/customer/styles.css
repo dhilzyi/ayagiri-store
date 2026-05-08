@@ -3,6 +3,8 @@ section {
   align-items: center;
   flex-direction: column;
 }
+
+/* App */
 .app-container {
   width: 1280px;
   height: 800px;
@@ -46,6 +48,20 @@ section {
   width: 70%;
 }
 
+.menu-section .product-item {
+  text-align: center;
+
+  background-color: darkgray;
+  width: 200px;
+  height: 100px;
+  margin: 10px;
+}
+
+.product-item h4 {
+  margin: 0;
+  padding: 0;
+}
+
 .category-bar {
   background-color: purple;
   height: 10%;
@@ -64,7 +80,77 @@ section {
   white-space: nowrap;
   cursor: pointer;
 }
+
+/* ORDER SECTIONS */
+/* */
 .order-section {
   flex: 2.5;
   background-color: yellow;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.order-section h2 {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.item-lists {
+  flex: 7;
+}
+
+.item-lists table {
+  width: 100%;
+  text-align: center;
+}
+
+.item-lists .header-change-amount {
+  width: 70px;
+}
+
+.footer-order {
+  flex: 3;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.price-section {
+  flex: 3;
+  align-items: center;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 0 15px;
+}
+
+.sum-price {
+  text-align: right;
+  float: right;
+}
+
+.order-button-section {
+  flex: 7;
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+.order-button-section button {
+  padding: 10px;
+  margin: 10px;
+  height: 70px;
+}
+
+#delete-all-btn {
+  width: 80px;
+}
+
+#order-btn {
+  width: 100px;
 }

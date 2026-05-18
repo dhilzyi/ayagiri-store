@@ -1,10 +1,11 @@
 package api
 
 import (
-	"encoding/json"
 	"io"
 	"log"
 	"net/http"
+
+	"github.com/goccy/go-json"
 )
 
 func respondWithJSON(w http.ResponseWriter, code int, payload interface{}) {

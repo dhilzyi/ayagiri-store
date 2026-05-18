@@ -21,6 +21,7 @@ func (h *Handler) GETProducts(w http.ResponseWriter, r *http.Request) {
 	products, err := h.db.GetProducts(context.Background())
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error(), err)
+		return
 	}
 
 	respondWithJSON(w, 200, products)

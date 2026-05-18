@@ -38,8 +38,10 @@ func main() {
 		Handler: mux,
 	}
 
-	mux.HandleFunc("GET /product", handler.GETProducts)
-	mux.HandleFunc("POST /product", handler.POSTProduct)
+	mux.Handle("/", http.FileServer(http.Dir("./web/customer")))
+
+	mux.HandleFunc("GET /api/product", handler.GETProducts)
+	mux.HandleFunc("POST /api/product", handler.POSTProduct)
 
 	fmt.Println("Server on 127.0.0.1" + port)
 	if err := srv.ListenAndServe(); err != nil {

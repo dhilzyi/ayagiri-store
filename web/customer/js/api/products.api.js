@@ -1,0 +1,12 @@
+// Fetch to the api only module
+
+export async function loadProductsByCategory(categoryID) {
+  const res = await fetch(`/api/product?category_id=${categoryID}`);
+  if (!res.ok) {
+    throw Error(`response bad status: ${res.status}`);
+  }
+  const products = res.json();
+  console.log(products);
+
+  return products;
+}

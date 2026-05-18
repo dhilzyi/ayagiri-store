@@ -68,6 +68,47 @@ func (q *Queries) DeleteProductByID(ctx context.Context, id int32) error {
 	return err
 }
 
+const getProductByCategoryID = `-- name: GetProductByCategoryID :many
+SELECT
+  id, created_at, updated_at, name, romaji_name, price, category_id, discount
+FROM
+  product
+WHERE
+  category_id = $1
+`
+
+func (q *Queries) GetProductByCategoryID(ctx context.Context, categoryID sql.NullInt32) ([]Product, error) {
+	rows, err := q.db.QueryContext(ctx, getProductByCategoryID, categoryID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Product
+	for rows.Next() {
+		var i Product
+		if err := rows.Scan(
+			&i.ID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.Name,
+			&i.RomajiName,
+			&i.Price,
+			&i.CategoryID,
+			&i.Discount,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getProductByID = `-- name: GetProductByID :one
 SELECT
   id, created_at, updated_at, name, romaji_name, price, category_id, discount
@@ -166,15 +207,17 @@ SET
   updated_at = NOW(),
   name = $1,
   price = $2,
-  category_id = $3
+  category_id = $3,
+  discount = $4
 WHERE
-  id = $4
+  id = $5
 `
 
 type UpdateProductByIDParams struct {
 	Name       string
 	Price      int32
 	CategoryID sql.NullInt32
+	Discount   sql.NullInt32
 	ID         int32
 }
 
@@ -183,6 +226,7 @@ func (q *Queries) UpdateProductByID(ctx context.Context, arg UpdateProductByIDPa
 		arg.Name,
 		arg.Price,
 		arg.CategoryID,
+		arg.Discount,
 		arg.ID,
 	)
 	return err

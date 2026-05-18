@@ -50,6 +50,15 @@ SET
   updated_at = NOW(),
   name = $1,
   price = $2,
-  category_id = $3
+  category_id = $3,
+  discount = $4
 WHERE
-  id = $4;
+  id = $5;
+
+-- name: GetProductByCategoryID :many
+SELECT
+  *
+FROM
+  product
+WHERE
+  category_id = $1;

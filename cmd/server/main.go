@@ -40,11 +40,11 @@ func main() {
 
 	mux.Handle("/", http.FileServer(http.Dir("./web/customer")))
 
-	mux.HandleFunc("GET /api/product", handler.GETProducts)
-	mux.HandleFunc("POST /api/product", handler.POSTProduct)
+	mux.HandleFunc("GET /api/product", handler.ListProducts)
+	mux.HandleFunc("POST /api/product", handler.CreateProduct)
 
-	mux.HandleFunc("GET /api/category", handler.GETCategories)
-	mux.HandleFunc("POST /api/category", handler.POSTCategory)
+	mux.HandleFunc("GET /api/category", handler.ListCategories)
+	mux.HandleFunc("POST /api/category", handler.CreateCategory)
 
 	fmt.Println("Server on 127.0.0.1" + port)
 	if err := srv.ListenAndServe(); err != nil {

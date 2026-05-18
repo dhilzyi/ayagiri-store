@@ -1,9 +1,11 @@
 package api
 
 import (
+	"database/sql"
 	"io"
 	"log"
 	"net/http"
+	"restaurant/internal/database"
 
 	"github.com/goccy/go-json"
 )
@@ -43,4 +45,40 @@ func decodeJson(raw io.Reader, placeholder any) error {
 	}
 
 	return nil
+}
+
+func toProductResponse(p database.Product) ProductResponse {
+	return ProductResponse{
+		ID:         p.ID,
+		Name:       p.Name,
+		RomajiName: p.RomajiName,
+		Price:      p.Price,
+		CategoryID: p.CategoryID.Int32,
+		Discount:   p.Discount.Int32,
+	}
+}
+
+func toProductResponses(products []database.Product) []ProductResponse {
+	result := make([]ProductResponse, len(products))
+	for i, p := range products {
+		result[i] = toProductResponse(p)
+	}
+	return result
+}
+
+func toProductRequest(p ProductRequest) database.CreateProductParams {
+	return database.CreateProductParams{
+		Name:       p.Name,
+		RomajiName: p.RomajiName,
+		Price:      int32(p.Price),
+		Discount:   toNullInt32(p.Discount),
+		CategoryID: toNullInt32(p.CategoryID),
+	}
+}
+
+func toNullInt32(v *int32) sql.NullInt32 {
+	if v == nil {
+		return sql.NullInt32{Valid: false}
+	}
+	return sql.NullInt32{Int32: *v, Valid: true}
 }

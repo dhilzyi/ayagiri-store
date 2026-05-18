@@ -5,12 +5,12 @@ type Order struct {
 	Table   Table
 }
 
-type PayloadProductParams struct {
+type ProductRequest struct {
 	Name       string
 	RomajiName string `json:"romaji_name"`
-	Price      uint32
-	Discount   int32
-	CategoryID int32 `json:"category_id"`
+	Price      int32
+	Discount   *int32
+	CategoryID *int32 `json:"category_id"`
 }
 
 type PayloadCategoryParams struct {
@@ -27,4 +27,13 @@ type Product struct {
 
 type Table struct {
 	ID int
+}
+
+type ProductResponse struct {
+	ID         int32  `json:"id"`
+	Name       string `json:"name"`
+	RomajiName string `json:"romaji_name"`
+	Price      int32  `json:"price"`
+	CategoryID int32  `json:"category_id"`
+	Discount   int32  `json:"discount"`
 }

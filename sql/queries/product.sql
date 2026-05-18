@@ -1,8 +1,16 @@
 -- name: CreateProduct :one
 INSERT INTO
-  product (created_at, updated_at, name, price, discount)
-VALUEs
-  (NOW(), NOW(), $1, $2, $3)
+  product (
+    created_at,
+    updated_at,
+    name,
+    romaji_name,
+    price,
+    category_id,
+    discount
+  )
+VALUES
+  (NOW(), NOW(), $1, $2, $3, $4, $5)
 RETURNING
   *;
 
@@ -41,6 +49,7 @@ UPDATE product
 SET
   updated_at = NOW(),
   name = $1,
-  price = $2
+  price = $2,
+  category_id = $3
 WHERE
-  id = $3;
+  id = $4;

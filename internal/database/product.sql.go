@@ -12,28 +12,46 @@ import (
 
 const createProduct = `-- name: CreateProduct :one
 INSERT INTO
-  product (created_at, updated_at, name, price, discount)
-VALUEs
-  (NOW(), NOW(), $1, $2, $3)
+  product (
+    created_at,
+    updated_at,
+    name,
+    romaji_name,
+    price,
+    category_id,
+    discount
+  )
+VALUES
+  (NOW(), NOW(), $1, $2, $3, $4, $5)
 RETURNING
-  id, created_at, updated_at, name, price, discount
+  id, created_at, updated_at, name, romaji_name, price, category_id, discount
 `
 
 type CreateProductParams struct {
-	Name     string
-	Price    int32
-	Discount sql.NullInt32
+	Name       string
+	RomajiName string
+	Price      int32
+	CategoryID sql.NullInt32
+	Discount   sql.NullInt32
 }
 
 func (q *Queries) CreateProduct(ctx context.Context, arg CreateProductParams) (Product, error) {
-	row := q.db.QueryRowContext(ctx, createProduct, arg.Name, arg.Price, arg.Discount)
+	row := q.db.QueryRowContext(ctx, createProduct,
+		arg.Name,
+		arg.RomajiName,
+		arg.Price,
+		arg.CategoryID,
+		arg.Discount,
+	)
 	var i Product
 	err := row.Scan(
 		&i.ID,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 		&i.Name,
+		&i.RomajiName,
 		&i.Price,
+		&i.CategoryID,
 		&i.Discount,
 	)
 	return i, err
@@ -52,7 +70,7 @@ func (q *Queries) DeleteProductByID(ctx context.Context, id int32) error {
 
 const getProductByID = `-- name: GetProductByID :one
 SELECT
-  id, created_at, updated_at, name, price, discount
+  id, created_at, updated_at, name, romaji_name, price, category_id, discount
 FROM
   product
 WHERE
@@ -67,7 +85,9 @@ func (q *Queries) GetProductByID(ctx context.Context, id int32) (Product, error)
 		&i.CreatedAt,
 		&i.UpdatedAt,
 		&i.Name,
+		&i.RomajiName,
 		&i.Price,
+		&i.CategoryID,
 		&i.Discount,
 	)
 	return i, err
@@ -75,7 +95,7 @@ func (q *Queries) GetProductByID(ctx context.Context, id int32) (Product, error)
 
 const getProducts = `-- name: GetProducts :many
 SElECT
-  id, created_at, updated_at, name, price, discount
+  id, created_at, updated_at, name, romaji_name, price, category_id, discount
 FROM
   product
 `
@@ -94,7 +114,9 @@ func (q *Queries) GetProducts(ctx context.Context) ([]Product, error) {
 			&i.CreatedAt,
 			&i.UpdatedAt,
 			&i.Name,
+			&i.RomajiName,
 			&i.Price,
+			&i.CategoryID,
 			&i.Discount,
 		); err != nil {
 			return nil, err
@@ -135,5 +157,33 @@ type UpdateDiscountParams struct {
 
 func (q *Queries) UpdateDiscount(ctx context.Context, arg UpdateDiscountParams) error {
 	_, err := q.db.ExecContext(ctx, updateDiscount, arg.Discount, arg.ID)
+	return err
+}
+
+const updateProductByID = `-- name: UpdateProductByID :exec
+UPDATE product
+SET
+  updated_at = NOW(),
+  name = $1,
+  price = $2,
+  category_id = $3
+WHERE
+  id = $4
+`
+
+type UpdateProductByIDParams struct {
+	Name       string
+	Price      int32
+	CategoryID sql.NullInt32
+	ID         int32
+}
+
+func (q *Queries) UpdateProductByID(ctx context.Context, arg UpdateProductByIDParams) error {
+	_, err := q.db.ExecContext(ctx, updateProductByID,
+		arg.Name,
+		arg.Price,
+		arg.CategoryID,
+		arg.ID,
+	)
 	return err
 }

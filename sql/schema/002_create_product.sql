@@ -6,6 +6,7 @@ CREATE TABLE product (
   name TEXT NOT NULL,
   romaji_name TEXT NOT NULL,
   price INT NOT NULL,
+  category_id INT REFERENCES category (id),
   discount INT DEFAULT 0
 );
 

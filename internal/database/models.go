@@ -9,11 +9,21 @@ import (
 	"time"
 )
 
+type Category struct {
+	ID         int32
+	CreatedAt  time.Time
+	UpdatedAt  time.Time
+	Name       string
+	RomajiName string
+}
+
 type Product struct {
-	ID        int32
-	CreatedAt time.Time
-	UpdatedAt time.Time
-	Name      string
-	Price     int32
-	Discount  sql.NullInt32
+	ID         int32
+	CreatedAt  time.Time
+	UpdatedAt  time.Time
+	Name       string
+	RomajiName string
+	Price      int32
+	CategoryID sql.NullInt32
+	Discount   sql.NullInt32
 }

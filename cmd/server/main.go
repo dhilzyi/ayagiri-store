@@ -43,6 +43,9 @@ func main() {
 	mux.HandleFunc("GET /api/product", handler.GETProducts)
 	mux.HandleFunc("POST /api/product", handler.POSTProduct)
 
+	mux.HandleFunc("GET /api/category", handler.GETCategories)
+	mux.HandleFunc("POST /api/category", handler.POSTCategory)
+
 	fmt.Println("Server on 127.0.0.1" + port)
 	if err := srv.ListenAndServe(); err != nil {
 		log.Fatal(err)

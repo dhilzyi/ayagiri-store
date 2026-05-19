@@ -1,0 +1,11 @@
+#popup-cancel-btn {
+  background-color: red;
+}
+
+#popup-confirm-btn {
+  background-color: green;
+}
+
+.popup-footer button {
+  height: 40px;
+}

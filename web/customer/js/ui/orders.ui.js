@@ -22,18 +22,29 @@ export function renderOrderItem(product) {
   }
 }
 
-export function deleteOrder(productId) {
+export function deleteOrderItem(productId) {
   const trItem = document.querySelector(`tr[data-product-id='${productId}']`);
   trItem.remove();
 }
 
-export function renderCostTotal() {
+export function renderCostTotalOrder() {
+  const costTotal = formatterCurrency(orderService.getTotal());
   const h2Price = document.querySelector("h2.sum-price");
-  h2Price.textContent = `￥${orderService.getTotal()}`;
+  h2Price.textContent = costTotal;
 }
 
-export function deleteAllOrders() {
+export function deleteAllOrdersItem() {
   const orderItems = document.querySelector("tbody.order-list");
 
   orderItems.innerHTML = ``;
+}
+
+function formatterCurrency(cost) {
+  const formatter = new Intl.NumberFormat("ja-JP", {
+    style: "currency",
+    currency: "JPY",
+    minimumFractionDigits: 0,
+  });
+
+  return formatter.format(cost);
 }

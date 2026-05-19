@@ -1,10 +1,5 @@
 import { orderService, productCache } from "../state.js";
-import {
-  deleteAllOrders,
-  deleteOrder,
-  renderCostTotal,
-  renderOrderItem,
-} from "../ui/orders.ui.js";
+import { renderCostTotalOrder, renderOrderItem } from "../ui/orders.ui.js";
 
 export function initMenuListeners() {
   document.querySelector(".product-display").addEventListener("click", (e) => {
@@ -20,45 +15,6 @@ export function initMenuListeners() {
     if (added) {
       renderOrderItem(product);
     }
-    renderCostTotal();
+    renderCostTotalOrder();
   });
-}
-
-export function initOrderListeners() {
-  document
-    .querySelector("div.item-lists table")
-    .addEventListener("click", (e) => {
-      const tr = e.target.closest("tr[data-product-id]");
-      if (!tr) return;
-
-      const productID = Number(tr.dataset.productId);
-      const product = productCache.get(productID);
-      if (!product)
-        throw Error("product with following ID is not found in map");
-
-      if (e.target.closest(".btn-increment")) {
-        orderService.incrementAmount(productID);
-        renderOrderItem(product);
-      } else if (e.target.closest(".btn-decrement")) {
-        const deleted = orderService.decrementAmount(productID);
-        if (deleted) {
-          deleteOrder(productID);
-        } else {
-          renderOrderItem(product);
-        }
-      }
-      renderCostTotal();
-    });
-
-  // delete all orders button
-  document
-    .querySelector("div.order-btn-section")
-    .addEventListener("click", (e) => {
-      const deleteAllBtn = e.target.closest("#delete-all-btn");
-      if (!deleteAllBtn) return;
-
-      orderService.deleteAllOrder();
-      deleteAllOrders();
-      renderCostTotal();
-    });
 }

@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="css/components/header.css" />
     <link rel="stylesheet" href="css/components/menu.css" />
     <link rel="stylesheet" href="css/components/order.css" />
+    <link rel="stylesheet" href="css/components/button.css" />
   </head>
   <body>
     <section>
@@ -74,6 +75,20 @@
         </div>
       </div>
     </section>
+
+    <!-- Overlay and Pop up elements -->
+    <div class="overlay" id="overlay"></div>
+
+    <div class="popup" id="popup-confirm">
+      <div class="popup-header">
+        <h3>操作確認</h3>
+      </div>
+      <div class="popup-body"></div>
+      <div class="popup-footer">
+        <button id="popup-cancel-btn">キャンセル</button>
+        <button id="popup-confirm-btn">確認</button>
+      </div>
+    </div>
     <script type="module" src="./js/main.js"></script>
   </body>
 </html>

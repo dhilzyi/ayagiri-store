@@ -1,15 +1,15 @@
 // Render only module
 
-export function renderProduct(resp) {
+export function renderProduct(product) {
   const productDisplay = document.querySelector("div.product-display");
-  const divEle = document.createElement("div");
+  const productItemDiv = document.createElement("div");
 
-  divEle.dataset.productId = 1;
-  divEle.className = "product-item";
-  divEle.innerHTML = `
-    <h3>たこやき</h3>
-    <h4>￥600<span>（税込）</span></h4>
+  productItemDiv.dataset.productId = product["id"];
+  productItemDiv.className = "product-item";
+  productItemDiv.innerHTML = `
+    <h3>${product["name"]}</h3>
+    <h4>￥${product["price"]}<span>（税込）</span></h4>
   `;
 
-  productDisplay.appendChild(divEle);
+  productDisplay.appendChild(productItemDiv);
 }

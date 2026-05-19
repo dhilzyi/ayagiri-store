@@ -6,7 +6,6 @@ export async function loadProductsByCategory(categoryID) {
     throw Error(`response bad status: ${res.status}`);
   }
   const products = res.json();
-  console.log(products);
 
   return products;
 }

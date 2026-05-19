@@ -52,4 +52,8 @@ export class OrderService {
     }
     return total;
   }
+
+  deleteAllOrder() {
+    this.orderList = new Map();
+  }
 }

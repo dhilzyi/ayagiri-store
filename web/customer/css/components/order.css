@@ -1,0 +1,68 @@
+.order-section h2 {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.item-lists {
+  flex: 7;
+}
+
+.item-lists table {
+  width: 100%;
+  text-align: center;
+  table-layout: fixed;
+}
+
+.item-lists .header-amount {
+  width: 40px;
+}
+
+.item-lists .header-change-amount {
+  width: 70px;
+}
+
+.footer-order {
+  flex: 3;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.price-section {
+  flex: 3;
+  align-items: center;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 0 15px;
+}
+
+.sum-price {
+  text-align: right;
+  float: right;
+}
+
+.order-btn-section {
+  flex: 7;
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+.order-btn-section button {
+  padding: 10px;
+  margin: 10px;
+  height: 70px;
+}
+
+#delete-all-btn {
+  width: 80px;
+}
+
+#order-btn {
+  width: 100px;
+}

@@ -3,7 +3,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Ayagiri</title>
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/layout.css" />
+    <link rel="stylesheet" href="css/components/header.css" />
+    <link rel="stylesheet" href="css/components/menu.css" />
+    <link rel="stylesheet" href="css/components/order.css" />
   </head>
   <body>
     <section>
@@ -46,27 +50,22 @@
             <h2>注文リスト</h2>
             <div class="item-lists">
               <table>
-                <tr>
-                  <th class="header-name-product">商品名</th>
-                  <th class="header-amount">数</th>
-                  <th class="header-change-amount">変更</th>
-                </tr>
-                <tr class="order-item" data-product-id="0">
-                  <td class="product-name">照り焼き</td>
-                  <td class="product-amount">1</td>
-                  <td>
-                    <button class="btn-decrement">-</button>
-                    <button class="btn-increment">+</button>
-                  </td>
-                </tr>
+                <thead>
+                  <tr>
+                    <th class="header-name-product">商品名</th>
+                    <th class="header-amount">数</th>
+                    <th class="header-change-amount">変更</th>
+                  </tr>
+                </thead>
+                <tbody class="order-list"></tbody>
               </table>
             </div>
             <div class="footer-order">
               <div class="price-section">
                 <h3>合計金額</h3>
-                <h2 class="sum-price">￥100.00</h2>
+                <h2 class="sum-price">￥0</h2>
               </div>
-              <div class="order-button-section">
+              <div class="order-btn-section">
                 <button id="delete-all-btn">すべて 取り消し</button>
                 <button id="order-btn">注文する</button>
               </div>

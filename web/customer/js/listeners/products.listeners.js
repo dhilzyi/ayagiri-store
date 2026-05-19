@@ -1,6 +1,7 @@
 import { orderService, productCache } from "../state.js";
 import {
-  deleteOrderItem,
+  deleteAllOrders,
+  deleteOrder,
   renderCostTotal,
   renderOrderItem,
 } from "../ui/orders.ui.js";
@@ -41,11 +42,23 @@ export function initOrderListeners() {
       } else if (e.target.closest(".btn-decrement")) {
         const deleted = orderService.decrementAmount(productID);
         if (deleted) {
-          deleteOrderItem(productID);
+          deleteOrder(productID);
         } else {
           renderOrderItem(product);
         }
       }
+      renderCostTotal();
+    });
+
+  // delete all orders button
+  document
+    .querySelector("div.order-btn-section")
+    .addEventListener("click", (e) => {
+      const deleteAllBtn = e.target.closest("#delete-all-btn");
+      if (!deleteAllBtn) return;
+
+      orderService.deleteAllOrder();
+      deleteAllOrders();
       renderCostTotal();
     });
 }

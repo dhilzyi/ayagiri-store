@@ -1,7 +1,7 @@
 import { orderService } from "../state.js";
 
 export function renderOrderItem(product) {
-  const tableOrders = document.querySelector(".item-lists table");
+  const tableOrders = document.querySelector("tbody.order-list");
   let trItem = tableOrders.querySelector(`tr[data-product-id='${product.id}']`);
   if (trItem) {
     const item = orderService.orderList.get(product.id);
@@ -9,6 +9,7 @@ export function renderOrderItem(product) {
   } else {
     trItem = document.createElement("tr");
     trItem.dataset.productId = product.id;
+    trItem.className = "order-item";
     trItem.innerHTML = `
 	<td class="product-name">${product.name}</td>
 	<td class="product-amount">1</td>
@@ -21,7 +22,7 @@ export function renderOrderItem(product) {
   }
 }
 
-export function deleteOrderItem(productId) {
+export function deleteOrder(productId) {
   const trItem = document.querySelector(`tr[data-product-id='${productId}']`);
   trItem.remove();
 }
@@ -29,4 +30,10 @@ export function deleteOrderItem(productId) {
 export function renderCostTotal() {
   const h2Price = document.querySelector("h2.sum-price");
   h2Price.textContent = `￥${orderService.getTotal()}`;
+}
+
+export function deleteAllOrders() {
+  const orderItems = document.querySelector("tbody.order-list");
+
+  orderItems.innerHTML = ``;
 }

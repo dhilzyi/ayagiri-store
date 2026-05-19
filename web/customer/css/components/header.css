@@ -1,0 +1,20 @@
+.app-header {
+  background-color: red;
+  height: 15%;
+
+  display: flex;
+}
+
+.app-header-item {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-right: 2px solid black; /* stroke between tabs */
+  border-bottom: 2px solid black;
+  cursor: pointer;
+}
+
+.app-header-item:last-child {
+  border-right: none; /* remove last one */
+}

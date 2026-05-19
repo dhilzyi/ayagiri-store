@@ -1,0 +1,29 @@
+.app-container {
+  width: 1280px;
+  height: 800px;
+  background-color: gray;
+  border-color: 5px solid black;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.app-body {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+}
+
+.menu-section {
+  background-color: blue;
+  flex: 7.5;
+  width: 70%;
+}
+
+.order-section {
+  flex: 2.5;
+  background-color: yellow;
+
+  display: flex;
+  flex-direction: column;
+}

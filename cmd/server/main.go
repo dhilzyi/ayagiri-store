@@ -42,6 +42,7 @@ func main() {
 
 	mux.HandleFunc("GET /api/product", handler.ListProducts)
 	mux.HandleFunc("POST /api/product", handler.CreateProduct)
+	mux.HandleFunc("POST /api/products", handler.CreateMultipleProducts)
 
 	mux.HandleFunc("GET /api/category", handler.ListCategories)
 	mux.HandleFunc("POST /api/category", handler.CreateCategory)

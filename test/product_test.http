@@ -20,6 +20,35 @@ Content-Type: application/json
 }
 
 
+### POST MULTIPLE PRODUCT
+
+POST {{url}}/api/products HTTP/1.1
+Content-Type: application/json
+
+[
+  {
+    "category_id": 2,
+    "name": "もやし炒め",
+    "price": 750
+  },
+  {
+    "category_id": 2,
+    "name": "チャーハン",
+    "price": 700
+  },
+  {
+    "category_id": 2,
+    "name": "パンケーキ",
+    "price": 430
+  },
+  {
+    "category_id": 2,
+    "name": "カプチーノコーヒー",
+    "price": 400
+  }
+]
+
+
 ### GET STATIC FILES
 
 GET {{url}}/ HTTP/2

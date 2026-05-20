@@ -52,3 +52,21 @@ func (h *Handler) CreateProduct(w http.ResponseWriter, r *http.Request) {
 	}
 	respondWithJSON(w, http.StatusCreated, product)
 }
+
+func (h *Handler) CreateMultipleProducts(w http.ResponseWriter, r *http.Request) {
+	var productReq []ProductRequest
+	if err := decodeJson(r.Body, &productReq); err != nil {
+		respondWithError(w, http.StatusBadRequest, err.Error(), err)
+		return
+	}
+	var productRes []ProductResponse
+	for i := range productReq {
+		product, err := h.db.CreateProduct(context.Background(), toProductRequest(productReq[i]))
+		if err != nil {
+			respondWithError(w, http.StatusInternalServerError, err.Error(), err)
+			return
+		}
+		productRes = append(productRes, toProductResponse(product))
+	}
+	respondWithJSON(w, http.StatusCreated, productRes)
+}

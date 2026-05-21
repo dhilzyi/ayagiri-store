@@ -51,4 +51,4 @@ Content-Type: application/json
 
 ### GET STATIC FILES
 
-GET {{url}}/ HTTP/2
+GET {{url}}/kitchen HTTP/2

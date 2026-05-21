@@ -39,6 +39,7 @@ func main() {
 	}
 
 	mux.Handle("/", http.FileServer(http.Dir("./web/customer")))
+	mux.Handle("/kitchen/", http.StripPrefix("/kitchen", http.FileServer(http.Dir("./web/kitchen"))))
 
 	mux.HandleFunc("GET /api/product", handler.ListProducts)
 	mux.HandleFunc("POST /api/product", handler.CreateProduct)

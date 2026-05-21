@@ -1,4 +1,7 @@
 import { orderService, setActivePopup } from "../state.js";
+import { formatterCurrency } from "./orders.ui.js";
+
+const orderPopupItemLimit = 7;
 
 export function openPopupDelConfirm(bodyHTML, onConfirm) {
   document.getElementById("overlay").classList.add("active");
@@ -46,16 +49,49 @@ export function closePopupOrderConfirm() {
 
 export function renderPopupOrderItems() {
   const tbodyPopup = document.querySelector(".popup-order-body tbody");
-  let trList = "";
+  const trList = [];
+  let counter = 1;
   orderService.orderList.forEach((val) => {
     const newTr = `
 		<tr>
+			<td>${counter}</td>
 			<td>${val.product.name}</td>
 			<td>${val.amount}</td>
 			<td>￥${val.product.price}</td>
 		</tr>
 `;
-    trList += newTr;
+    trList.push(newTr);
+    counter++;
   });
-  tbodyPopup.innerHTML = trList;
+
+  // Fill with empty row if it's still have some space
+  if (trList.length < orderPopupItemLimit) {
+    for (let i = trList.length; i < 7; i++) {
+      trList.push(`
+		<tr>
+			<td>${counter}</td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+`);
+      counter++;
+    }
+  }
+
+  // TODO: Make this fixed when the table is able to scroll
+  trList.push(`
+			<tr class="total-row">
+				<td class="no-border"></td>
+				<td class="no-border"></td>
+				<td
+					class="no-border"
+					style="text-align: right; padding-right: 15px"
+				>
+					合計:
+				</td>
+				<td>${formatterCurrency(orderService.getTotal())}</td>
+			</tr>
+`);
+  tbodyPopup.innerHTML = trList.join("");
 }

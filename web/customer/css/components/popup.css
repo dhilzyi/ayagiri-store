@@ -1,3 +1,4 @@
+/* TODO: Make table scrollable when the order items is exceed screen */
 .popup-order {
   display: none;
   position: fixed;
@@ -36,16 +37,21 @@
 
 .popup-order-body th:nth-child(1),
 .popup-order-body td:nth-child(1) {
-  width: auto;
+  width: 30px;
 }
 
 .popup-order-body th:nth-child(2),
 .popup-order-body td:nth-child(2) {
-  width: 50px;
+  width: auto;
 }
 
 .popup-order-body th:nth-child(3),
 .popup-order-body td:nth-child(3) {
+  width: 50px;
+}
+
+.popup-order-body th:nth-child(4),
+.popup-order-body td:nth-child(4) {
   width: 100px;
 }
 
@@ -54,6 +60,10 @@
   border: 1px solid #ddd;
   padding: 8px;
   height: 40px;
+}
+
+.popup-order-body td.no-border {
+  border: none;
 }
 
 .popup-order-body tbody {

@@ -40,7 +40,7 @@ export function deleteAllOrdersItem() {
   renderCostTotalOrder();
 }
 
-function formatterCurrency(cost) {
+export function formatterCurrency(cost) {
   const formatter = new Intl.NumberFormat("ja-JP", {
     style: "currency",
     currency: "JPY",

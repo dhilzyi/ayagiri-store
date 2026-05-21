@@ -17,6 +17,12 @@
   cursor: pointer;
 }
 
+.category-item.active {
+  background-color: #333; /* dark */
+  color: white; /* text readable */
+  border-color: 2px solid white;
+}
+
 .product-display {
   display: grid;
   /* grid-template-columns: repeat(3, 250px); */

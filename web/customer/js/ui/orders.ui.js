@@ -37,6 +37,7 @@ export function deleteAllOrdersItem() {
   const orderItems = document.querySelector("tbody.order-list");
 
   orderItems.innerHTML = ``;
+  renderCostTotalOrder();
 }
 
 function formatterCurrency(cost) {

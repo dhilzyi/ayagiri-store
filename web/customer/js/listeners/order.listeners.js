@@ -1,11 +1,16 @@
-import { orderService, productCache } from "../state.js";
+import { activePopup, orderService, productCache } from "../state.js";
 import {
   deleteAllOrdersItem,
   deleteOrderItem,
   renderCostTotalOrder,
   renderOrderItem,
 } from "../ui/orders.ui.js";
-import { closePopup, openPopup } from "../ui/popup.ui.js";
+import {
+  closePopupDelConfirm,
+  closePopupOrderConfirm,
+  openPopupDelConfirm,
+  openPopupOrderConfirm,
+} from "../ui/popup.ui.js";
 
 export function initOrderListeners() {
   document
@@ -35,19 +40,40 @@ export function initOrderListeners() {
 }
 
 export function initPopupListeners() {
+  // Overlay cancel button listener
+  document.getElementById("overlay").addEventListener("click", () => {
+    if (activePopup === "del-confirm") {
+      closePopupDelConfirm();
+    }
+    if (activePopup === "order-confirm") {
+      closePopupOrderConfirm();
+    }
+  });
+
+  // Delete orders confirm popup, accept/cancel button listener
   document.getElementById("delete-all-btn").addEventListener("click", () => {
     const b = `
 <p>注文をすべてキャンセルしますか？</p>
 `;
-    openPopup(b, () => {
+    openPopupDelConfirm(b, () => {
       orderService.deleteAllOrder();
       deleteAllOrdersItem();
-      renderCostTotalOrder();
     });
   });
-
   document
     .getElementById("popup-cancel-btn")
-    .addEventListener("click", closePopup);
-  document.getElementById("overlay").addEventListener("click", closePopup); // click outside to close
+    .addEventListener("click", closePopupDelConfirm);
+
+  // Order confirm popup. accept/cancel button listener
+  document.getElementById("order-btn").addEventListener("click", () => {
+    openPopupOrderConfirm(() => {
+      console.log("Sending order...");
+      console.log(orderService.orderList);
+      orderService.deleteAllOrder();
+      deleteAllOrdersItem();
+    });
+  });
+  document
+    .getElementById("order-confirm-cancel-btn")
+    .addEventListener("click", closePopupOrderConfirm);
 }

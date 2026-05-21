@@ -9,3 +9,13 @@ export async function loadProductsByCategory(categoryID) {
 
   return products;
 }
+
+export async function loadProducts() {
+  const res = await fetch(`/api/product`);
+  if (!res.ok) {
+    throw Error(`response bad status: ${res.status}`);
+  }
+  const products = res.json();
+
+  return products;
+}

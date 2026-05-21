@@ -1,4 +1,4 @@
-// Render only module
+import { productCache } from "../state.js";
 
 export function renderProduct(product) {
   const productDisplay = document.querySelector("div.product-display");
@@ -12,4 +12,15 @@ export function renderProduct(product) {
   `;
 
   productDisplay.appendChild(productItemDiv);
+}
+
+export function renderProductsByCategory(categoryId) {
+  const productDisplay = document.querySelector("div.product-display");
+  productDisplay.innerHTML = "";
+
+  productCache.forEach((product) => {
+    if (product.category_id === categoryId) {
+      renderProduct(product);
+    }
+  });
 }

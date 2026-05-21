@@ -3,12 +3,14 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Ayagiri</title>
+
     <link rel="stylesheet" href="css/base.css" />
     <link rel="stylesheet" href="css/layout.css" />
     <link rel="stylesheet" href="css/components/header.css" />
     <link rel="stylesheet" href="css/components/menu.css" />
     <link rel="stylesheet" href="css/components/order.css" />
     <link rel="stylesheet" href="css/components/button.css" />
+    <link rel="stylesheet" href="css/components/popup.css" />
   </head>
   <body>
     <section>
@@ -21,7 +23,7 @@
         <div class="app-body">
           <div class="menu-section">
             <div class="category-bar">
-              <div class="category-item" data-category-id="2">
+              <div class="category-item active" data-category-id="2">
                 <h3>おすすめ</h3>
               </div>
               <div class="category-item" data-category-id="3">
@@ -58,7 +60,10 @@
                     <th class="header-change-amount">変更</th>
                   </tr>
                 </thead>
-                <tbody class="order-list"></tbody>
+                <tbody class="order-list">
+                  <!-- this table body is -->
+                  <!-- dynamically filled by javascript for ordering items by customer -->
+                </tbody>
               </table>
             </div>
             <div class="footer-order">
@@ -79,7 +84,7 @@
     <!-- Overlay and Pop up elements -->
     <div class="overlay" id="overlay"></div>
 
-    <div class="popup" id="popup-confirm">
+    <div class="popup" id="del-confirm">
       <div class="popup-header">
         <h3>操作確認</h3>
       </div>
@@ -89,6 +94,28 @@
         <button id="popup-confirm-btn">確認</button>
       </div>
     </div>
+
+    <div class="popup-order" id="order-confirm">
+      <h3>注文の確認</h3>
+      <div class="popup-order-body">
+        <table>
+          <thead>
+            <th>商品名</th>
+            <th>数</th>
+            <th>値段</th>
+          </thead>
+          <tbody>
+            <!-- this table body is -->
+            <!-- dynamically filled by javascript for ordered items -->
+          </tbody>
+        </table>
+      </div>
+      <div class="popup-order-footer">
+        <button id="order-confirm-cancel-btn">キャンセル</button>
+        <button id="order-confirm-btn">確定</button>
+      </div>
+    </div>
+
     <script type="module" src="./js/main.js"></script>
   </body>
 </html>

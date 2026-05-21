@@ -1,7 +1,4 @@
-// responsible for handling order service
-//
-
-import { debugPrint } from "../state.js";
+// responsible for handling orders
 
 export class OrderService {
   constructor() {

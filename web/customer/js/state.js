@@ -5,10 +5,14 @@ export const orderService = new OrderService();
 
 export function cacheProducts(products) {
   products.forEach((p) => productCache.set(p.id, p));
-
-  console.log(productCache);
 }
 
 export function debugPrint(obj) {
   console.log(JSON.stringify(Object.fromEntries(obj), null, 2));
+}
+
+// Popup overlay state
+export let activePopup = null;
+export function setActivePopup(id) {
+  activePopup = id;
 }

@@ -1,0 +1,85 @@
+/* Container sizing and centering */
+.order-status {
+  width: 80%;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+  color: #333;
+}
+
+/* Summary text with blue underlines like your sketch */
+.summary-box {
+  margin-bottom: 40px;
+}
+.summary-box p {
+  font-size: 18px;
+  margin: 5px 0;
+  text-decoration: underline;
+  text-decoration-color: #007bff; /* Blue underline */
+  text-decoration-thickness: 2px;
+}
+
+/* --- ORDER CARD --- */
+.order-card {
+  margin-bottom: 50px;
+}
+
+.order-header {
+  display: flex;
+  align-items: baseline; /* Aligns the big H2 and small time text on their bottom edges */
+  gap: 15px;
+  margin-bottom: 10px;
+}
+
+.order-header h2 {
+  margin: 0;
+  font-size: 32px;
+}
+
+.order-header .time {
+  font-size: 20px;
+  color: #666;
+}
+
+/* Flexbox to put the grey box and button side-by-side */
+.order-content {
+  display: flex;
+  align-items: stretch;
+  gap: 20px;
+}
+
+/* The Grey Box */
+.order-items-box {
+  flex: 1;
+  background-color: #dbdbdb;
+  padding: 20px;
+  min-height: 120px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 24px;
+}
+
+.item {
+  display: flex;
+  justify-content: space-between; /* Pushes item name left, quantity right */
+  border-bottom: 1px dashed #999;
+  padding-bottom: 5px;
+}
+
+/* The Green Button */
+.complete-btn {
+  width: 150px;
+  background-color: #a7c497;
+  border: 2px solid #8ba87c;
+  color: #000;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+/* Active state makes it feel like it clicks down */
+.complete-btn:active {
+  background-color: #8ba87c;
+  transform: translateY(2px);
+}

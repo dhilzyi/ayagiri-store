@@ -1,13 +1,12 @@
 body {
   display: flex;
   justify-content: center;
-}
-section {
-  width: 70%;
-  display: flex;
-
   flex-direction: column;
+  width: 1500px;
+
+  font-family: sans-serif;
 }
+
 .main-header {
   display: flex;
   background-color: yellow;
@@ -21,6 +20,14 @@ section {
   justify-content: center;
 }
 
+section {
+  width: 100%;
+  display: flex;
+
+  flex-direction: column;
+  display: none;
+}
+
 .row-1 {
   display: flex;
   flex-direction: row;
@@ -29,9 +36,24 @@ section {
 .current-status {
   width: 70%;
   background-color: red;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  align-items: center;
+}
+
+.current-status-body {
+  display: flex;
+  flex-direction: row;
+  gap: 50px;
 }
 
 .today-turnover {
   width: 30%;
   background-color: gray;
+  text-align: center;
+}
+
+section.active {
+  display: flex;
 }

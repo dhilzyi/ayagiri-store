@@ -8,40 +8,16 @@ package database
 import (
 	"context"
 
+	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
-const addOrderItem = `-- name: AddOrderItem :one
-INSERT INTO
-  order_items (
-    created_at,
-    updated_at,
-    order_id,
-    product_id,
-    quantity
-  )
-VALUES
-  (NOW(), NOW(), $1, $2, $3)
-RETURNING
-  id, order_id, product_id, quantity
-`
-
-type AddOrderItemParams struct {
-	OrderID   pgtype.UUID
+type BulkCreateOrderItemParams struct {
+	CreatedAt pgtype.Timestamp
+	UpdatedAt pgtype.Timestamp
+	OrderID   uuid.UUID
 	ProductID int32
 	Quantity  int32
-}
-
-func (q *Queries) AddOrderItem(ctx context.Context, arg AddOrderItemParams) (OrderItem, error) {
-	row := q.db.QueryRow(ctx, addOrderItem, arg.OrderID, arg.ProductID, arg.Quantity)
-	var i OrderItem
-	err := row.Scan(
-		&i.ID,
-		&i.OrderID,
-		&i.ProductID,
-		&i.Quantity,
-	)
-	return i, err
 }
 
 const createOrder = `-- name: CreateOrder :one
@@ -54,7 +30,7 @@ RETURNING
 `
 
 type CreateOrderParams struct {
-	ID      pgtype.UUID
+	ID      uuid.UUID
 	TableID int32
 }
 
@@ -77,7 +53,7 @@ WHERE
   id = $1
 `
 
-func (q *Queries) DeleteOrder(ctx context.Context, id pgtype.UUID) error {
+func (q *Queries) DeleteOrder(ctx context.Context, id uuid.UUID) error {
 	_, err := q.db.Exec(ctx, deleteOrder, id)
 	return err
 }
@@ -91,7 +67,7 @@ WHERE
   id = $1
 `
 
-func (q *Queries) GetOrderByID(ctx context.Context, id pgtype.UUID) (Order, error) {
+func (q *Queries) GetOrderByID(ctx context.Context, id uuid.UUID) (Order, error) {
 	row := q.db.QueryRow(ctx, getOrderByID, id)
 	var i Order
 	err := row.Scan(
@@ -149,7 +125,7 @@ RETURNING
 
 type OrderCompleteParams struct {
 	OrderComplete bool
-	ID            pgtype.UUID
+	ID            uuid.UUID
 }
 
 func (q *Queries) OrderComplete(ctx context.Context, arg OrderCompleteParams) (Order, error) {

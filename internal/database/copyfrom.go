@@ -44,6 +44,42 @@ func (q *Queries) BulkCreateCategories(ctx context.Context, arg []BulkCreateCate
 	return q.db.CopyFrom(ctx, []string{"categories"}, []string{"created_at", "updated_at", "name", "english_name"}, &iteratorForBulkCreateCategories{rows: arg})
 }
 
+// iteratorForBulkCreateOrderItem implements pgx.CopyFromSource.
+type iteratorForBulkCreateOrderItem struct {
+	rows                 []BulkCreateOrderItemParams
+	skippedFirstNextCall bool
+}
+
+func (r *iteratorForBulkCreateOrderItem) Next() bool {
+	if len(r.rows) == 0 {
+		return false
+	}
+	if !r.skippedFirstNextCall {
+		r.skippedFirstNextCall = true
+		return true
+	}
+	r.rows = r.rows[1:]
+	return len(r.rows) > 0
+}
+
+func (r iteratorForBulkCreateOrderItem) Values() ([]interface{}, error) {
+	return []interface{}{
+		r.rows[0].CreatedAt,
+		r.rows[0].UpdatedAt,
+		r.rows[0].OrderID,
+		r.rows[0].ProductID,
+		r.rows[0].Quantity,
+	}, nil
+}
+
+func (r iteratorForBulkCreateOrderItem) Err() error {
+	return nil
+}
+
+func (q *Queries) BulkCreateOrderItem(ctx context.Context, arg []BulkCreateOrderItemParams) (int64, error) {
+	return q.db.CopyFrom(ctx, []string{"order_items"}, []string{"created_at", "updated_at", "order_id", "product_id", "quantity"}, &iteratorForBulkCreateOrderItem{rows: arg})
+}
+
 // iteratorForBulkCreateProducts implements pgx.CopyFromSource.
 type iteratorForBulkCreateProducts struct {
 	rows                 []BulkCreateProductsParams

@@ -51,6 +51,8 @@ func main() {
 	mux.HandleFunc("POST /api/categories", handler.CreateCategory)
 	mux.HandleFunc("POST /api/categories/bulk", handler.CreateCategories)
 
+	mux.HandleFunc("POST /api/orders/{orderID}", handler.CreateOrder)
+
 	fmt.Println("Server on 127.0.0.1" + port)
 	if err := srv.ListenAndServe(); err != nil {
 		log.Fatal(err)

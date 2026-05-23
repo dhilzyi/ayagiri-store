@@ -9,6 +9,8 @@ CREATE TABLE orders (
 
 CREATE TABLE order_items (
   id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  created_at TIMESTAMP NOT NULL,
+  updated_at TIMESTAMP NOT NULL,
   order_id UUID NOT NULL REFERENCES orders (id) ON DELETE CASCADE,
   product_id INT NOT NULL REFERENCES products (id),
   quantity INT NOT NULL DEFAULT 1

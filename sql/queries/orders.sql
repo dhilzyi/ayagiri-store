@@ -19,7 +19,7 @@ FROM
 WHERE
   id = $1;
 
--- name: AddOrderItem :one
+-- name: BulkCreateOrderItem :copyfrom
 INSERT INTO
   order_items (
     created_at,
@@ -29,9 +29,7 @@ INSERT INTO
     quantity
   )
 VALUES
-  (NOW(), NOW(), $1, $2, $3)
-RETURNING
-  *;
+  ($1, $2, $3, $4, $5);
 
 -- name: GetOrders :many
 SELEcT

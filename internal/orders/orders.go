@@ -1,23 +1,25 @@
 package orders
 
 import (
+	"fmt"
 	"sync"
-	"time"
 
 	"restaurant/internal/domain"
+
+	"github.com/google/uuid"
 )
 
-type OrderManager struct {
+type OrderService struct {
 	sync.RWMutex
 
 	// The active orders
-	Orders map[string]*Order
+	orders map[uuid.UUID]*Order
 
 	// Kitchen tablets listening for ANY new order
-	KitchenClients map[chan Event]bool
+	kitchenClients map[chan Event]bool
 
 	// Customers listening for THEIR order (Map key is OrderID)
-	CustomerClients map[string]chan Event
+	customerClients map[uuid.UUID]chan Event
 }
 
 type Event struct {
@@ -26,12 +28,44 @@ type Event struct {
 }
 
 type Order struct {
-	Items     []OrderItem
-	CreatedAt time.Time
-	Status    string
+	TableID int32       `json:"table_id"`
+	Items   []OrderItem `json:"items"`
 }
 
 type OrderItem struct {
-	Product domain.ProductResponse
-	Amount  int32
+	Product  domain.ProductResponse `json:"product"`
+	Quantity int32                  `json:"quantity"`
+}
+
+func NewOrderSrv() *OrderService {
+	return &OrderService{
+		kitchenClients:  make(map[chan Event]bool),
+		customerClients: make(map[uuid.UUID]chan Event),
+		orders:          make(map[uuid.UUID]*Order),
+	}
+}
+
+func (o *OrderService) AddNewOrder(orderID uuid.UUID, order Order) error {
+	o.Lock()
+	defer o.Unlock()
+
+	_, exists := o.orders[orderID]
+	if exists {
+		return fmt.Errorf("order is already exist")
+	}
+	o.orders[orderID] = &order
+
+	return nil
+}
+
+func (o *OrderService) CompleteOrder(orderID uuid.UUID) error {
+	o.Lock()
+	defer o.Unlock()
+
+	_, exists := o.orders[orderID]
+	if !exists {
+		return fmt.Errorf("order does not exist")
+	}
+
+	return nil
 }

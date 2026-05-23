@@ -5,6 +5,7 @@
 package database
 
 import (
+	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
@@ -17,7 +18,7 @@ type Category struct {
 }
 
 type Order struct {
-	ID            pgtype.UUID
+	ID            uuid.UUID
 	CreatedAt     pgtype.Timestamp
 	UpdatedAt     pgtype.Timestamp
 	TableID       int32
@@ -26,7 +27,9 @@ type Order struct {
 
 type OrderItem struct {
 	ID        int32
-	OrderID   pgtype.UUID
+	CreatedAt pgtype.Timestamp
+	UpdatedAt pgtype.Timestamp
+	OrderID   uuid.UUID
 	ProductID int32
 	Quantity  int32
 }

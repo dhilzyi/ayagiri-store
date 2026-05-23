@@ -1,10 +1,10 @@
 -- name: CreateProduct :one
 INSERT INTO
-  product (
+  products (
     created_at,
     updated_at,
     name,
-    romaji_name,
+    english_name,
     price,
     category_id,
     discount
@@ -14,8 +14,22 @@ VALUES
 RETURNING
   *;
 
+-- name: BulkCreateProducts :copyfrom
+INSERT INTO
+  products (
+    created_at,
+    updated_at,
+    name,
+    english_name,
+    price,
+    category_id,
+    discount
+  )
+VALUES
+  ($1, $2, $3, $4, $5, $6, $7);
+
 -- name: UpdateDiscount :exec
-UPDATE product
+UPDATE products
 SET
   updated_at = NOW(),
   discount = $1
@@ -23,7 +37,7 @@ WHERE
   id = $2;
 
 -- name: DeleteProductByID :exec
-DELETE FROM product
+DELETE FROM products
 WHERE
   id = $1;
 
@@ -31,21 +45,21 @@ WHERE
 SElECT
   *
 FROM
-  product;
+  products;
 
 -- name: GetProductByID :one
 SELECT
   *
 FROM
-  product
+  products
 WHERE
   id = $1;
 
--- name: ResetProductRows :exec
-DELETE FROM product;
+-- name: ResetProductsRows :exec
+DELETE FROM products;
 
 -- name: UpdateProductByID :exec
-UPDATE product
+UPDATE products
 SET
   updated_at = NOW(),
   name = $1,
@@ -59,6 +73,6 @@ WHERE
 SELECT
   *
 FROM
-  product
+  products
 WHERE
   category_id = $1;

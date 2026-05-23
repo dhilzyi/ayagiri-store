@@ -1,11 +1,27 @@
 ### POST CATEGORY
 
-POST {{url}}/api/category HTTP/1.1
+POST {{url}}/api/categories HTTP/1.1
 
 {
-  "name": "おすすめ",
-  "romaji_name": "Others"
+  "name": "料理",
+  "romaji_name": "Cuisine"
 }
+
+
+### POST MULTIPLE CATEGORY
+
+POST {{url}}/api/categories/bulk HTTP/1.1
+
+[
+  {
+    "english_name": "Others",
+    "name": "おすすめ"
+  },
+  {
+    "english_name": "Drinks",
+    "name": "ドリンク"
+  }
+]
 
 
 ### GET CATEGORY

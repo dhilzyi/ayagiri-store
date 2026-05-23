@@ -2,7 +2,7 @@ package api
 
 import (
 	"context"
-	"database/sql"
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -20,7 +20,7 @@ func (h *Handler) ListProducts(w http.ResponseWriter, r *http.Request) {
 			respondWithError(w, http.StatusBadRequest, "Invalid categoryID", err)
 			return
 		}
-		products, err = h.db.GetProductByCategoryID(context.Background(), sql.NullInt32{Int32: int32(categoryID), Valid: true})
+		products, err = h.db.GetProductByCategoryID(context.Background(), int32(categoryID))
 		if err != nil {
 			respondWithError(w, http.StatusInternalServerError, err.Error(), err)
 			return
@@ -53,20 +53,21 @@ func (h *Handler) CreateProduct(w http.ResponseWriter, r *http.Request) {
 	respondWithJSON(w, http.StatusCreated, product)
 }
 
-func (h *Handler) CreateMultipleProducts(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) CreateProducts(w http.ResponseWriter, r *http.Request) {
 	var productReq []ProductRequest
 	if err := decodeJson(r.Body, &productReq); err != nil {
 		respondWithError(w, http.StatusBadRequest, err.Error(), err)
 		return
 	}
-	var productRes []ProductResponse
-	for i := range productReq {
-		product, err := h.db.CreateProduct(context.Background(), toProductRequest(productReq[i]))
-		if err != nil {
-			respondWithError(w, http.StatusInternalServerError, err.Error(), err)
-			return
-		}
-		productRes = append(productRes, toProductResponse(product))
+	if len(productReq) <= 0 {
+		respondWithError(w, http.StatusBadRequest, fmt.Sprintf("at least one product is required"), fmt.Errorf("at least one product is required"))
+		return
 	}
-	respondWithJSON(w, http.StatusCreated, productRes)
+	result, err := h.db.BulkCreateProducts(context.Background(), toBulkProducts(productReq))
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, err.Error(), err)
+		return
+	}
+
+	respondWithJSON(w, http.StatusCreated, result)
 }

@@ -5,25 +5,39 @@
 package database
 
 import (
-	"database/sql"
-	"time"
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 type Category struct {
-	ID         int32
-	CreatedAt  time.Time
-	UpdatedAt  time.Time
-	Name       string
-	RomajiName string
+	ID          int32
+	CreatedAt   pgtype.Timestamp
+	UpdatedAt   pgtype.Timestamp
+	Name        string
+	EnglishName string
+}
+
+type Order struct {
+	ID            pgtype.UUID
+	CreatedAt     pgtype.Timestamp
+	UpdatedAt     pgtype.Timestamp
+	TableID       int32
+	OrderComplete bool
+}
+
+type OrderItem struct {
+	ID        int32
+	OrderID   pgtype.UUID
+	ProductID int32
+	Quantity  int32
 }
 
 type Product struct {
-	ID         int32
-	CreatedAt  time.Time
-	UpdatedAt  time.Time
-	Name       string
-	RomajiName string
-	Price      int32
-	CategoryID sql.NullInt32
-	Discount   sql.NullInt32
+	ID          int32
+	CreatedAt   pgtype.Timestamp
+	UpdatedAt   pgtype.Timestamp
+	Name        string
+	EnglishName string
+	Price       int32
+	CategoryID  int32
+	Discount    int32
 }

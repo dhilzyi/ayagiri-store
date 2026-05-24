@@ -178,6 +178,44 @@ func (q *Queries) GetProducts(ctx context.Context) ([]Product, error) {
 	return items, nil
 }
 
+const getProductsByID = `-- name: GetProductsByID :many
+SELECT
+  id, created_at, updated_at, name, english_name, price, category_id, discount
+FROM
+  products
+WHERE
+  id = ANY ($1::int[])
+`
+
+func (q *Queries) GetProductsByID(ctx context.Context, dollar_1 []int32) ([]Product, error) {
+	rows, err := q.db.Query(ctx, getProductsByID, dollar_1)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Product
+	for rows.Next() {
+		var i Product
+		if err := rows.Scan(
+			&i.ID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.Name,
+			&i.EnglishName,
+			&i.Price,
+			&i.CategoryID,
+			&i.Discount,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const resetProductsRows = `-- name: ResetProductsRows :exec
 DELETE FROM products
 `

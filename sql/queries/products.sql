@@ -76,3 +76,11 @@ FROM
   products
 WHERE
   category_id = $1;
+
+-- name: GetProductsByID :many
+SELECT
+  *
+FROM
+  products
+WHERE
+  id = ANY ($1::int[]);

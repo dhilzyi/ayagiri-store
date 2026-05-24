@@ -20,6 +20,7 @@ const (
 
 func main() {
 	godotenv.Load(".env")
+	log.SetFlags(log.LstdFlags | log.Lshortfile)
 
 	dbUrl := os.Getenv("DB_URL")
 	ctx := context.Background()
@@ -51,7 +52,11 @@ func main() {
 	mux.HandleFunc("POST /api/categories", handler.CreateCategory)
 	mux.HandleFunc("POST /api/categories/bulk", handler.CreateCategories)
 
-	mux.HandleFunc("POST /api/orders/{orderID}", handler.CreateOrder)
+	// Customer client will request to this to create an order
+	mux.HandleFunc("POST /api/orders", handler.CreateOrder)
+
+	// SSE handlers. Kitchen client will listen to this for new orders from customer client side
+	mux.HandleFunc("GET /api/kitchen/stream", handler.KitchenStreamListenHandler)
 
 	fmt.Println("Server on 127.0.0.1" + port)
 	if err := srv.ListenAndServe(); err != nil {

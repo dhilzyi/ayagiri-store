@@ -1,3 +1,4 @@
+import { sendOrder } from "../api/products.api.js";
 import { activePopup, orderService, productCache } from "../state.js";
 import {
   deleteAllOrdersItem,
@@ -66,9 +67,16 @@ export function initPopupListeners() {
 
   // Order confirm popup. accept/cancel button listener
   document.getElementById("order-btn").addEventListener("click", () => {
-    openPopupOrderConfirm(() => {
+    openPopupOrderConfirm(async () => {
       console.log("Sending order...");
-      console.log(orderService.orderList);
+
+      const orderItems = orderService.getArrayOrderItems();
+      try {
+        await sendOrder(orderItems);
+      } catch (err) {
+        console.log(err);
+        return;
+      }
       orderService.deleteAllOrder();
       deleteAllOrdersItem();
     });

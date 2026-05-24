@@ -53,4 +53,16 @@ export class OrderService {
   deleteAllOrder() {
     this.orderList = new Map();
   }
+
+  getArrayOrderItems() {
+    const results = [];
+    for (const item of this.orderList.values()) {
+      const data = {
+        product_id: item.product.id,
+        quantity: item.amount,
+      };
+      results.push(data);
+    }
+    return results;
+  }
 }

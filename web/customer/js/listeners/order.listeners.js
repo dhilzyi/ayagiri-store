@@ -1,4 +1,4 @@
-import { sendOrder } from "../api/products.api.js";
+import { initSSEOrders, sendOrder } from "../api/customers.api.js";
 import { activePopup, orderService, productCache } from "../state.js";
 import {
   deleteAllOrdersItem,
@@ -71,12 +71,14 @@ export function initPopupListeners() {
       console.log("Sending order...");
 
       const orderItems = orderService.getArrayOrderItems();
+      const orderID = crypto.randomUUID();
       try {
-        await sendOrder(orderItems);
+        await sendOrder(orderItems, orderID);
       } catch (err) {
         console.log(err);
         return;
       }
+      initSSEOrders(orderID);
       orderService.deleteAllOrder();
       deleteAllOrdersItem();
     });

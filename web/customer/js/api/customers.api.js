@@ -20,8 +20,7 @@ export async function loadProducts() {
   return products;
 }
 
-export async function sendOrder(orderItems) {
-  const orderID = crypto.randomUUID();
+export async function sendOrder(orderItems, orderID) {
   const payload = {
     table_id: 2,
     items: orderItems,
@@ -42,4 +41,20 @@ export async function sendOrder(orderItems) {
     );
   }
   console.log(res.status);
+}
+
+// TODO: Optimize to only have one SSE connection per customer client not per orders
+export async function initSSEOrders(orderID) {
+  const eventSource = new EventSource(`/api/orders/stream?order_id=${orderID}`);
+  eventSource.onmessage = (event) => {
+    const msg = JSON.parse(event.data);
+    console.log(msg);
+
+    eventSource.close();
+    console.log("EventSource closed successfully.");
+  };
+
+  eventSource.onerror = (err) => {
+    console.log(err);
+  };
 }

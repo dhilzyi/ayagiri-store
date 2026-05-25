@@ -1,4 +1,4 @@
-import { loadProducts } from "./api/products.api.js";
+import { loadProducts } from "./api/customers.api.js";
 import { initListeners } from "./listeners/index.js";
 import { cacheProducts } from "./state.js";
 import { renderProductsByCategory } from "./ui/menu.ui.js";

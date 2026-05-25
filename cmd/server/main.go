@@ -41,6 +41,7 @@ func main() {
 		Handler: mux,
 	}
 
+	// Static web files handler
 	mux.Handle("/", http.FileServer(http.Dir("./web/customer")))
 	mux.Handle("/kitchen/", http.StripPrefix("/kitchen", http.FileServer(http.Dir("./web/kitchen"))))
 
@@ -52,11 +53,16 @@ func main() {
 	mux.HandleFunc("POST /api/categories", handler.CreateCategory)
 	mux.HandleFunc("POST /api/categories/bulk", handler.CreateCategories)
 
-	// Customer client will request to this to create an order
+	// Customer client will send a request to this to create an order
 	mux.HandleFunc("POST /api/orders", handler.CreateOrder)
+	// Kitchen client will send a signal to this endpoints to complete an orders
+	mux.HandleFunc("POST /api/complete_orders", handler.CompleteOrder)
 
-	// SSE handlers. Kitchen client will listen to this for new orders from customer client side
+	// SSE handlers.
+	// Kitchen client will have connection SSE open to this for new orders from customer client side
 	mux.HandleFunc("GET /api/kitchen/stream", handler.KitchenStreamListenHandler)
+	// Customer client will have connection open for their orders signal
+	mux.HandleFunc("GET /api/orders/stream", handler.CustomerStreamListenHandler)
 
 	fmt.Println("Server on 127.0.0.1" + port)
 	if err := srv.ListenAndServe(); err != nil {

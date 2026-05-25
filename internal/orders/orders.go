@@ -2,7 +2,6 @@ package orders
 
 import (
 	"fmt"
-	"restaurant/internal/domain"
 	"sync"
 
 	"github.com/google/uuid"
@@ -11,47 +10,17 @@ import (
 type OrderService struct {
 	sync.RWMutex
 
-	// The active orders
+	// The active orders. It contains Order data and with its their channel
 	orders map[uuid.UUID]*Order
 
 	// Kitchen clients listening for ANY new order
 	kitchenClients map[chan Event]interface{}
-
-	// Customers listening for THEIR order (Map key is OrderID)
-	customerClients map[uuid.UUID]chan interface{}
-}
-
-type Event struct {
-	Type    string `json:"type"`
-	Payload any    `json:"payload"`
-}
-
-type Order struct {
-	TableID int32              `json:"table_id"`
-	Items   []OrderItemRequest `json:"items"`
-}
-
-type OrderKitchenResponse struct {
-	OrderID uuid.UUID           `json:"order_id"`
-	TableID int32               `json:"table_id"`
-	Items   []OrderItemResponse `json:"items"`
-}
-
-type OrderItemRequest struct {
-	ProductID int32 `json:"product_id"`
-	Quantity  int32 `json:"quantity"`
-}
-
-type OrderItemResponse struct {
-	Quantity int32                  `json:"quantity"`
-	Products domain.ProductResponse `json:"products"`
 }
 
 func NewOrderSrv() *OrderService {
 	return &OrderService{
-		kitchenClients:  make(map[chan Event]any),
-		customerClients: make(map[uuid.UUID]chan any),
-		orders:          make(map[uuid.UUID]*Order),
+		kitchenClients: make(map[chan Event]any),
+		orders:         make(map[uuid.UUID]*Order),
 	}
 }
 
@@ -65,43 +34,53 @@ func (o *OrderService) AddNewOrder(orderID uuid.UUID, order Order) error {
 	}
 
 	o.orders[orderID] = &order
-	o.customerClients[orderID] = make(chan any)
 
 	return nil
 }
 
-func (o *OrderService) SendOrderToKitchen(orderID uuid.UUID, tableID int32, productItems []OrderItemResponse) error {
-	if len(o.kitchenClients) <= 0 {
-		return fmt.Errorf("no kitchen client is running")
-	}
-
-	event := Event{
-		Type: "ORDER",
+func (o *OrderService) CreateNewOrderEvent(orderID uuid.UUID, tableID int32, productItems []OrderItemResponse) Event {
+	return Event{
+		Type: "ADD_ORDER",
 		Payload: OrderKitchenResponse{
 			TableID: tableID,
 			OrderID: orderID,
 			Items:   productItems,
 		},
 	}
+}
 
+func (o *OrderService) BroadcastToKitchens(e Event) error {
+	o.RLock()
+	if len(o.kitchenClients) <= 0 {
+		o.RUnlock()
+		return fmt.Errorf("no kitchen client is running")
+	}
+	channels := make([]chan Event, 0, len(o.kitchenClients))
 	for ch := range o.kitchenClients {
-		ch <- event
+		channels = append(channels, ch)
+	}
+	o.RUnlock()
+
+	for _, ch := range channels {
+		select {
+		case ch <- e:
+			// Sent successfully!
+		default:
+			// If the channel is blocked, we skip it so we don't freeze.
+			// (The slow/dead client will be cleaned up when they disconnect).
+		}
 	}
 
 	return nil
 }
 
-func (o *OrderService) CompleteOrder(orderID uuid.UUID) error {
-	o.Lock()
-	defer o.Unlock()
-
-	clientCh, exists := o.customerClients[orderID]
-	if !exists {
-		return fmt.Errorf("order does not exist")
+func (o *OrderService) SendEventToClient(e Event, ch chan Event) {
+	select {
+	case ch <- e:
+		// Signal sent successfully because the client was listening
+	default:
+		// No one was listening (maybe they closed the tab).
 	}
-	clientCh <- struct{}{}
-
-	return nil
 }
 
 func (o *OrderService) CreateKitchenClient() chan Event {
@@ -114,10 +93,46 @@ func (o *OrderService) CreateKitchenClient() chan Event {
 	return ch
 }
 
+func (o *OrderService) CreateCustomerClient(orderID uuid.UUID) (chan Event, error) {
+	o.Lock()
+	defer o.Unlock()
+
+	orderData, exists := o.orders[orderID]
+	if !exists {
+		return nil, fmt.Errorf("order is does not exist in map: %s", orderID)
+	}
+
+	ch := make(chan Event)
+	orderData.Channel = ch
+
+	return ch, nil
+}
+
 func (o *OrderService) DeleteKitchenClient(ch chan Event) {
 	o.Lock()
 	defer o.Unlock()
 
 	delete(o.kitchenClients, ch)
 	close(ch)
+}
+
+func (o *OrderService) DeleteCustomerClient(orderID uuid.UUID, ch chan Event) {
+	o.Lock()
+	defer o.Unlock()
+
+	close(ch)
+	delete(o.orders, orderID)
+}
+
+func (o *OrderService) GetCustomerChannel(orderID uuid.UUID) (chan Event, bool) {
+	o.RLock()
+	defer o.RUnlock()
+	orderData, exists := o.orders[orderID]
+	if !exists {
+		return nil, false
+	}
+	if orderData.Channel == nil {
+		return nil, false
+	}
+	return orderData.Channel, true
 }

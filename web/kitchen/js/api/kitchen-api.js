@@ -5,10 +5,27 @@ import {
 } from "../ui/order_status.ui.js";
 
 export function initSSEListen() {
-  const source = new EventSource("/api/kitchen/stream");
-  source.onmessage = (event) => {
+  const eventSource = new EventSource("/api/kitchen/stream");
+  const statusContainer = document.getElementById("connection-status");
+  const statusText = statusContainer.querySelector(".status-text");
+
+  eventSource.onopen = function () {
+    statusContainer.className = "status-connected";
+    statusText.textContent = "接続中 (Online)";
+    console.log("connected");
+  };
+  eventSource.addEventListener("open", (e) => {
+    console.log("The connection has been established.");
+  });
+  eventSource.onerror = function () {
+    statusContainer.className = "status-disconnected";
+    statusText.textContent = "接続切れ (Offline)";
+    console.log("disconnected");
+    // Note: EventSource will automatically try to reconnect in the background.
+  };
+
+  eventSource.onmessage = (event) => {
     const eventData = JSON.parse(event.data);
-    console.log(eventData);
     console.log(JSON.stringify(eventData.payload));
     switch (eventData.type) {
       case "ADD_ORDER":
@@ -19,6 +36,8 @@ export function initSSEListen() {
       case "COMPLETE_ORDER":
         console.log("COMPLETE", eventData.payload.order_id);
         removeOrderFromQueue(eventData.payload.order_id);
+        break;
+      default:
         break;
     }
   };

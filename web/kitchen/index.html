@@ -41,6 +41,10 @@
     <section class="order-status active" data-section-id="2">
       <h1>注文情報</h1>
 
+      <div id="connection-status" class="status-disconnected">
+        <span class="status-dot"></span>
+        <span class="status-text">接続待ち (Connecting...)</span>
+      </div>
       <div class="summary-box">
         <!-- Using standard POS terms -->
         <p>待機オーダー： <span class="summary-number">0</span> 件</p>
@@ -52,7 +56,9 @@
         <!-- <div class="order-card" id="order-001"> -->
         <!--   <div class="order-header"> -->
         <!--     <h2>卓番： 1</h2> -->
-        <!--     <span class="time">00:00</span> -->
+        <!--     <span class="time" data-created-at="2026-05-25T23:04:59.455242Z" -->
+        <!--       >00:00</span -->
+        <!--     > -->
         <!--   </div> -->
         <!---->
         <!--   <div class="order-content"> -->
@@ -64,24 +70,6 @@
         <!--       <div class="item"><span>コーラ</span> <span>x 3</span></div> -->
         <!--     </div> -->
         <!--     <button class="complete-btn" onclick="completeOrder('order-001')"> -->
-        <!--       完成 -->
-        <!--     </button> -->
-        <!--   </div> -->
-        <!-- </div> -->
-
-        <!-- <div class="order-card" id="order-002"> -->
-        <!--   <div class="order-header"> -->
-        <!--     <h2>卓番： 2</h2> -->
-        <!--     <span class="time">00:05</span> -->
-        <!--   </div> -->
-        <!---->
-        <!--   <div class="order-content"> -->
-        <!--     <div class="order-items-box"> -->
-        <!--       <div class="item"> -->
-        <!--         <span>チーズバーガー</span> <span>x 1</span> -->
-        <!--       </div> -->
-        <!--     </div> -->
-        <!--     <button class="complete-btn" onclick="completeOrder('order-002')"> -->
         <!--       完成 -->
         <!--     </button> -->
         <!--   </div> -->

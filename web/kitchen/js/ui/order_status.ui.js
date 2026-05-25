@@ -1,4 +1,5 @@
 import { sendComplete } from "../api/kitchen-api.js";
+import { formatSeconds } from "./helpers.js";
 
 export function renderOrderTotals() {
   const orderList = document.querySelectorAll(".order-card");
@@ -23,10 +24,11 @@ export function addOrderToQueue(orderData) {
 `);
   });
 
+  console.log(orderData);
   const orderHeader = `
 <div class="order-header">
 	<h2>卓番： ${orderData.table_id}</h2>
-	<span class="time">00:00</span>
+	<span class="time" data-created-at="${orderData.created_at}">00:00</span>
 </div>
 `;
 
@@ -55,6 +57,29 @@ export function removeOrderFromQueue(orderID) {
   if (!orderCard) return;
   orderCard.remove();
   renderOrderTotals();
+}
+
+export function startGlobalTimer() {
+  setInterval(() => {
+    const now = new Date();
+
+    // Find all timer spans on the screen
+    const timerSpans = document.querySelectorAll("span.time");
+
+    timerSpans.forEach((span) => {
+      const createdAtStr = span.dataset.createdAt;
+      if (!createdAtStr) return;
+      const localTimeStr = createdAtStr.replace("Z", "");
+      const createdAt = new Date(localTimeStr);
+
+      // Subtracting Dates in JS returns milliseconds.
+      // Divide by 1000 to get seconds, and use Math.max to prevent negative numbers
+      const elapsedSeconds = Math.max(0, Math.floor((now - createdAt) / 1000));
+
+      // Update the text!
+      span.textContent = formatSeconds(elapsedSeconds);
+    });
+  }, 1000);
 }
 
 export function initListeners() {

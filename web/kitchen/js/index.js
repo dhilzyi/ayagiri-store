@@ -1,4 +1,4 @@
-import { initListeners } from "./ui/order_status.ui.js";
+import { initListeners, startGlobalTimer } from "./ui/order_status.ui.js";
 import { initSSEListen } from "./api/kitchen-api.js";
 
 function initMainListeners() {
@@ -20,3 +20,4 @@ function initMainListeners() {
 initMainListeners();
 initListeners();
 initSSEListen();
+startGlobalTimer();

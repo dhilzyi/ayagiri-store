@@ -83,3 +83,41 @@
   background-color: #8ba87c;
   transform: translateY(2px);
 }
+
+#connection-status {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  font-family: sans-serif;
+  font-weight: bold;
+}
+
+/* The Base Dot */
+.status-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 8px;
+  transition:
+    background-color 0.3s,
+    box-shadow 0.3s;
+}
+
+/* Connected State (Green) */
+.status-connected {
+  color: #2e7d32;
+}
+.status-connected .status-dot {
+  background-color: #4caf50;
+  box-shadow: 0 0 8px #4caf50; /* Subtle glow */
+}
+
+/* Disconnected State (Red) */
+.status-disconnected {
+  color: #c62828;
+}
+.status-disconnected .status-dot {
+  background-color: #f44336;
+  box-shadow: 0 0 8px #f44336; /* Subtle glow */
+}

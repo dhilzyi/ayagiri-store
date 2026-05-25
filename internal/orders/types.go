@@ -1,8 +1,10 @@
 package orders
 
 import (
-	"github.com/google/uuid"
 	"restaurant/internal/domain"
+	"time"
+
+	"github.com/google/uuid"
 )
 
 type Event struct {
@@ -17,9 +19,10 @@ type Order struct {
 }
 
 type OrderKitchenResponse struct {
-	OrderID uuid.UUID           `json:"order_id"`
-	TableID int32               `json:"table_id"`
-	Items   []OrderItemResponse `json:"items"`
+	OrderID   uuid.UUID           `json:"order_id"`
+	TableID   int32               `json:"table_id"`
+	Items     []OrderItemResponse `json:"items"`
+	CreatedAt time.Time           `json:"created_at"`
 }
 
 type OrderCustomerResponse struct {

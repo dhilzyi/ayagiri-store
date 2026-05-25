@@ -2,6 +2,7 @@ package orders
 
 import (
 	"fmt"
+	"restaurant/internal/database"
 	"sync"
 
 	"github.com/google/uuid"
@@ -38,13 +39,14 @@ func (o *OrderService) AddNewOrder(orderID uuid.UUID, order Order) error {
 	return nil
 }
 
-func (o *OrderService) CreateNewOrderEvent(orderID uuid.UUID, tableID int32, productItems []OrderItemResponse) Event {
+func (o *OrderService) CreateNewOrderEvent(orderData database.Order, productItems []OrderItemResponse) Event {
 	return Event{
 		Type: "ADD_ORDER",
 		Payload: OrderKitchenResponse{
-			TableID: tableID,
-			OrderID: orderID,
-			Items:   productItems,
+			TableID:   orderData.TableID,
+			OrderID:   orderData.ID,
+			Items:     productItems,
+			CreatedAt: orderData.CreatedAt.Time,
 		},
 	}
 }

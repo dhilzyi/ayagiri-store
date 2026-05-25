@@ -65,7 +65,7 @@ func (h *Handler) CreateOrder(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Create new order and broadcast to all existing kitchens client
-	event := h.orderSvc.CreateNewOrderEvent(order.ID, order.TableID, mapOrderResponse(orderReq.Items, toProductResponses(productItems)))
+	event := h.orderSvc.CreateNewOrderEvent(order, mapOrderResponse(orderReq.Items, toProductResponses(productItems)))
 	if err := h.orderSvc.BroadcastToKitchens(event); err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error(), err)
 		return
@@ -92,6 +92,17 @@ func (h *Handler) KitchenStreamListenHandler(w http.ResponseWriter, r *http.Requ
 	kitchenClient := h.orderSvc.CreateKitchenClient()
 
 	rc := http.NewResponseController(w)
+	// Initial flush for sending a signal
+	_, err := fmt.Fprintf(w, "data: {\"type\":\"INITIAL\"}\n\n")
+	if err != nil {
+		log.Println("failed to write initial SSE payload: ", err)
+		return
+	}
+	if err := rc.Flush(); err != nil {
+		log.Println("failed to flush initial SSE headers: ", err)
+		return
+	}
+
 	for {
 		select {
 		case <-clientGone:

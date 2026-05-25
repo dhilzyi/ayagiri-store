@@ -1,3 +1,6 @@
+import { initListeners } from "./ui/order_status.ui.js";
+import { initSSEListen } from "./api/kitchen-api.js";
+
 function initMainListeners() {
   document.querySelector(".main-header").addEventListener("click", (e) => {
     const id = e.target.dataset.sectionId;
@@ -15,3 +18,5 @@ function initMainListeners() {
 }
 
 initMainListeners();
+initListeners();
+initSSEListen();

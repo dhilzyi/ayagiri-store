@@ -19,5 +19,5 @@ function initMainListeners() {
 
 initMainListeners();
 initListeners();
-initSSEListen();
+// initSSEListen();
 startGlobalTimer();

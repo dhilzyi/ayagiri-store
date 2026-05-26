@@ -6,13 +6,14 @@
 
     <link rel="stylesheet" href="styles.css" />
     <link rel="stylesheet" href="./css/components/order-status.css" />
+    <link rel="stylesheet" href="./css/components/database.css" />
   </head>
   <body>
     <header class="main-header">
       <h2 data-section-id="1">ダッシュボード</h2>
       <h2 data-section-id="2">注文ステータス</h2>
       <h2>タブレット調子</h2>
-      <h2>データベース</h2>
+      <h2 data-section-id="3">データベース</h2>
       <h2>設定</h2>
     </header>
 
@@ -38,7 +39,7 @@
       </div>
     </section>
 
-    <section class="order-status active" data-section-id="2">
+    <section class="order-status" data-section-id="2">
       <h1>注文情報</h1>
 
       <div id="connection-status" class="status-disconnected">
@@ -74,6 +75,91 @@
         <!--     </button> -->
         <!--   </div> -->
         <!-- </div> -->
+      </div>
+    </section>
+    <section class="database active" data-section-id="3">
+      <h1>データベース</h1>
+      <div class="database-body">
+        <!-- <div class="database-header"> -->
+        <!--   <h2>商品</h2> -->
+        <!--   <h2>オーだー</h2> -->
+        <!-- </div> -->
+        <h2>現在は商品テーブルを表示しています。</h2>
+        <div class="action">
+          <div>
+            <label for="database-table">データベースを選択:</label>
+            <select name="database-table" id="database-table">
+              <option value="products">商品(Product)</option>
+              <option value="orders">注文(Orders)</option>
+            </select>
+          </div>
+          <div>
+            <button id="edit-selected">選択項目を変更する</button>
+            <button id="new-order-btn">+新しい項目を作成</button>
+          </div>
+        </div>
+        <div class="database-pagination-header">
+          <div class="left">
+            <search>
+              <form action="">
+                <label for="search-input">検索:</label>
+                <input type="search" placeholder="検索する" />
+              </form>
+            </search>
+            <button class="filter-btn">フィ</button>
+            <span>64件の結果のうち、11～20件を表示しています</span>
+          </div>
+          <div class="right">
+            <label for="result-page">1ページあたりの件数</label>
+            <select name="result-page" id="">
+              <option value="10">10</option>
+              <option value="10">20</option>
+              <option value="10">50</option>
+            </select>
+          </div>
+        </div>
+        <div class="table-container">
+          <table class="database-table">
+            <thead>
+              <tr>
+                <th class="input-cell"><input type="checkbox" /></th>
+                <th>#</th>
+                <th class="product-id">商品_ID <span>⇅</span></th>
+                <th class="product-name">商品名</th>
+                <th class="discount">値段⇅</th>
+                <th>割引⇅</th>
+                <th class="category">カテゴリー⇅</th>
+                <th class="created-at">作成日⇅</th>
+                <th class="last-updated">最終変更日⇅</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th class="input-cell"><input type="checkbox" /></th>
+                <td>1</td>
+                <td class="product-id">8</td>
+                <td class="product-name">ラーメン</td>
+                <td>￥1000</td>
+                <td class="discount">0</td>
+                <td class="category">料理</td>
+                <td class="created-at">10/04/2024</td>
+                <td class="last-updated">10/04/2024</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="database-pagination-footer">
+            <nav class="pagination">
+              <a href="">前</a>
+              <ul class="pagination-items">
+                <li><a href="">1</a></li>
+                <li><a href="">2</a></li>
+                <li><a href="">...</a></li>
+                <li><a href="">10</a></li>
+              </ul>
+              <a href="">次</a>
+            </nav>
+          </div>
+        </div>
       </div>
     </section>
     <script type="module" src="./js/index.js"></script>

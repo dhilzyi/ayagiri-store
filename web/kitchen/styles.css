@@ -1,8 +1,15 @@
+/* Add this to the absolute top of your style.css file */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
 body {
   display: flex;
   justify-content: center;
   flex-direction: column;
   width: 1500px;
+  margin: 0 auto;
 
   font-family: sans-serif;
 }

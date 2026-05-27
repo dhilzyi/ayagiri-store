@@ -142,3 +142,25 @@ func toBulkProducts(pList []ProductRequest) []database.BulkCreateProductsParams 
 
 	return bulks
 }
+
+func toProductResponsesAdmin(p []database.GetProductsJoinRow) []domain.ProductResponseAdmin {
+	results := make([]domain.ProductResponseAdmin, 0, len(p))
+	for i := range p {
+		inst := p[i]
+		results = append(results, domain.ProductResponseAdmin{
+			ProductResponse: toProductResponse(database.Product{
+				ID:          inst.ID,
+				Name:        inst.Name,
+				EnglishName: inst.EnglishName,
+				Price:       inst.Price,
+				CategoryID:  inst.CategoryID,
+				Discount:    inst.Discount,
+			}),
+			CreatedAt:    inst.CreatedAt.Time,
+			UpdatedAt:    inst.UpdatedAt.Time,
+			CategoryName: inst.CategoryName,
+		})
+	}
+
+	return results
+}

@@ -71,3 +71,13 @@ func (h *Handler) CreateProducts(w http.ResponseWriter, r *http.Request) {
 
 	respondWithJSON(w, http.StatusCreated, result)
 }
+
+func (h *Handler) ListProductsAdmin(w http.ResponseWriter, r *http.Request) {
+	products, err := h.db.GetProductsJoin(context.Background())
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, err.Error(), err)
+		return
+	}
+
+	respondWithJSON(w, http.StatusOK, toProductResponsesAdmin(products))
+}

@@ -1,11 +1,11 @@
 ### GET PRODUCT
 
-GET {{url}}/api/product HTTP/1.1
+GET {{url}}/api/products HTTP/1.1
 
 
 ### GET PRODUCT BY CATEGORY PARAMETER
 
-GET {{url}}/api/product?category_id=1 HTTP/1.1
+GET {{url}}/api/products?category_id=1 HTTP/1.1
 
 
 ### POST PRODUCT
@@ -28,13 +28,73 @@ Content-Type: application/json
 [
   {
     "category_id": 3,
-    "name": "もやし炒め",
+    "name": "てりやき",
     "price": 750
   },
   {
     "category_id": 3,
-    "name": "チャーハン",
+    "name": "海鮮丼",
     "price": 700
+  },
+  {
+    "category_id": 3,
+    "name": "餃子",
+    "price": 450
+  },
+  {
+    "category_id": 3,
+    "name": "醤油ラーメン",
+    "price": 850
+  },
+  {
+    "category_id": 3,
+    "name": "若鶏の唐揚げ",
+    "price": 600
+  },
+  {
+    "category_id": 3,
+    "name": "麻婆豆腐",
+    "price": 800
+  },
+  {
+    "category_id": 3,
+    "name": "ソース焼きそば",
+    "price": 750
+  },
+  {
+    "category_id": 3,
+    "name": "エビチリ",
+    "price": 900
+  },
+  {
+    "category_id": 2,
+    "name": "カプチーノコーヒー",
+    "price": 400
+  },
+  {
+    "category_id": 2,
+    "name": "生ビール",
+    "price": 550
+  },
+  {
+    "category_id": 2,
+    "name": "ウーロン茶",
+    "price": 300
+  },
+  {
+    "category_id": 2,
+    "name": "オレンジジュース",
+    "price": 350
+  },
+  {
+    "category_id": 2,
+    "name": "角ハイボール",
+    "price": 480
+  },
+  {
+    "category_id": 2,
+    "name": "メロンソーダ",
+    "price": 380
   },
   {
     "category_id": 1,
@@ -42,9 +102,19 @@ Content-Type: application/json
     "price": 430
   },
   {
-    "category_id": 2,
-    "name": "カプチーノコーヒー",
-    "price": 400
+    "category_id": 1,
+    "name": "抹茶パフェ",
+    "price": 650
+  },
+  {
+    "category_id": 1,
+    "name": "黒蜜きな粉アイス",
+    "price": 350
+  },
+  {
+    "category_id": 1,
+    "name": "自家製カスタードプリン",
+    "price": 380
   }
 ]
 
@@ -52,3 +122,8 @@ Content-Type: application/json
 ### GET STATIC FILES
 
 GET {{url}}/kitchen HTTP/2
+
+
+### GET PRODUCT ADMIN ENDPOINTS
+
+GET {{url}}/api/admin/products HTTP/1.1

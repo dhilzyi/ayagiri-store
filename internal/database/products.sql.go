@@ -216,6 +216,57 @@ func (q *Queries) GetProductsByID(ctx context.Context, dollar_1 []int32) ([]Prod
 	return items, nil
 }
 
+const getProductsJoin = `-- name: GetProductsJoin :many
+SELECT
+  products.id, products.created_at, products.updated_at, products.name, products.english_name, products.price, products.category_id, products.discount,
+  categories.name AS category_name
+FROM
+  products
+  INNER JOIN categories ON products.category_id = categories.id
+`
+
+type GetProductsJoinRow struct {
+	ID           int32
+	CreatedAt    pgtype.Timestamp
+	UpdatedAt    pgtype.Timestamp
+	Name         string
+	EnglishName  string
+	Price        int32
+	CategoryID   int32
+	Discount     int32
+	CategoryName string
+}
+
+func (q *Queries) GetProductsJoin(ctx context.Context) ([]GetProductsJoinRow, error) {
+	rows, err := q.db.Query(ctx, getProductsJoin)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []GetProductsJoinRow
+	for rows.Next() {
+		var i GetProductsJoinRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.Name,
+			&i.EnglishName,
+			&i.Price,
+			&i.CategoryID,
+			&i.Discount,
+			&i.CategoryName,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const resetProductsRows = `-- name: ResetProductsRows :exec
 DELETE FROM products
 `

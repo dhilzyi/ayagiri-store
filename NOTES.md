@@ -1,9 +1,16 @@
 ## Overview
 **POS RESTAURANT SYSTEM**
 
+HIGH DIAGRAM SYSTEM FLOW
+
+Kitchen will open SSE to backend inital and listening to the new orders.
+
+Client fetch products data from backend -> Make an order POST to backend + Open an Stream for signalling to that orderID -> Backend receives the order send the data through the all kitchen channel
+-> Kitchen will send a signal when the order is complete -> Backend receive a signal for that orderID -> Backend will send a stream to that client who hold the orderID.
+
 - Client
     - Every table has tablet that customer can order f&b
-    - It will send the order through websocket to server backend
+    - It will send the order to server backend
 
 - Kitchen Client
     - Chef will look at screen order to see the orderes
@@ -31,15 +38,13 @@
 ## Stacks
 - POSTGRES
 
-- Golang Module
+- Golang Package
     - github.com/joho/godotenv
     - goose
     - sqlc
 
-- Javascript and HTML vanilla
 
 ### Commands
 psql "postgres://postgres:postgres@localhost:5432/ayagiri?sslmode=disable"
 
 goose -dir ./sql/schema postgres "postgres://postgres:postgres@localhost:5432/ayagiri" up
-

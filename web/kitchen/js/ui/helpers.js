@@ -8,3 +8,10 @@ export function formatSeconds(totalSeconds) {
 
   return `${formattedMinutes}:${formattedSeconds}`;
 }
+
+export function prettyTimestamp(rawTime) {
+  rawTime = rawTime.replace("Z", "");
+  const time = new Date(rawTime);
+  const formatted = time.toLocaleString("sv-SE");
+  return formatted;
+}

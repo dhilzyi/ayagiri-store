@@ -2,7 +2,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Ayagiri SHOP</title>
+    <title>Ayagiri Kitchen</title>
 
     <link rel="stylesheet" href="styles.css" />
     <link rel="stylesheet" href="./css/components/order-status.css" />
@@ -39,6 +39,7 @@
       </div>
     </section>
 
+    <!-- ORDER STATUS SECTIONS-->
     <section class="order-status" data-section-id="2">
       <h1>注文情報</h1>
 
@@ -77,6 +78,8 @@
         <!-- </div> -->
       </div>
     </section>
+
+    <!-- DATABASE SECTIONS-->
     <section class="database active" data-section-id="3">
       <h1>データベース</h1>
       <div class="database-body">
@@ -87,10 +90,11 @@
         <h2>現在は商品テーブルを表示しています。</h2>
         <div class="action">
           <div>
-            <label for="database-table">データベースを選択:</label>
-            <select name="database-table" id="database-table">
-              <option value="products">商品(Product)</option>
-              <option value="orders">注文(Orders)</option>
+            <label for="database-select">データベースを選択:</label>
+            <select name="database-select" id="database-select">
+              <option value="products">商品覧</option>
+              <option value="orders">注文覧</option>
+              <option value="order-items">注文品覧</option>
             </select>
           </div>
           <div>
@@ -122,18 +126,31 @@
           <table class="database-table">
             <thead>
               <tr>
-                <th class="input-cell"><input type="checkbox" /></th>
+                <th class="input-cell" id="all-select">
+                  <input type="checkbox" />
+                </th>
                 <th>#</th>
                 <th class="product-id">商品_ID <span>⇅</span></th>
                 <th class="product-name">商品名</th>
-                <th class="discount">値段⇅</th>
-                <th>割引⇅</th>
+                <th class="price">値段⇅</th>
+                <th class="discount">割引⇅</th>
                 <th class="category">カテゴリー⇅</th>
                 <th class="created-at">作成日⇅</th>
-                <th class="last-updated">最終変更日⇅</th>
+                <th class="updated-at">最終変更日⇅</th>
               </tr>
             </thead>
             <tbody>
+              <tr>
+                <th class="input-cell"><input type="checkbox" /></th>
+                <td>1</td>
+                <td class="product-id">8</td>
+                <td class="product-name">ラーメン</td>
+                <td>￥1000</td>
+                <td class="discount">0</td>
+                <td class="category">料理</td>
+                <td class="created-at">10/04/2024</td>
+                <td class="last-updated">10/04/2024</td>
+              </tr>
               <tr>
                 <th class="input-cell"><input type="checkbox" /></th>
                 <td>1</td>
@@ -149,14 +166,11 @@
           </table>
           <div class="database-pagination-footer">
             <nav class="pagination">
-              <a href="">前</a>
-              <ul class="pagination-items">
-                <li><a href="">1</a></li>
-                <li><a href="">2</a></li>
-                <li><a href="">...</a></li>
-                <li><a href="">10</a></li>
+              <button id="pagination-prev">前へ</button>
+              <ul class="pagination-items" id="pagination-list">
+                <!-- DYNAMIC LIST -->
               </ul>
-              <a href="">次</a>
+              <button id="pagination-next">次へ</button>
             </nav>
           </div>
         </div>

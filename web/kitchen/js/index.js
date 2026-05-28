@@ -1,5 +1,6 @@
 import { initListeners, startGlobalTimer } from "./ui/order_status.ui.js";
 import { initSSEListen } from "./api/kitchen-api.js";
+import { initDatabase } from "./handlers/database.js";
 
 function initMainListeners() {
   document.querySelector(".main-header").addEventListener("click", (e) => {
@@ -17,7 +18,16 @@ function initMainListeners() {
   });
 }
 
+function initSelect() {
+  const databaseSelect = document.getElementById("database-select");
+  databaseSelect.addEventListener("change", () => {
+    console.log(databaseSelect.value);
+  });
+}
+
+initSelect();
 initMainListeners();
 initListeners();
+initDatabase();
 // initSSEListen();
-startGlobalTimer();
+// startGlobalTimer();

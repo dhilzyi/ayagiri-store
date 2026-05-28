@@ -14,9 +14,6 @@ export function initSSEListen() {
     statusText.textContent = "接続中 (Online)";
     console.log("connected");
   };
-  eventSource.addEventListener("open", (e) => {
-    console.log("The connection has been established.");
-  });
   eventSource.onerror = function () {
     statusContainer.className = "status-disconnected";
     statusText.textContent = "接続切れ (Offline)";
@@ -54,4 +51,28 @@ export async function sendComplete(orderID) {
     );
   }
   console.log(res.status);
+}
+
+export async function fetchDatabase(tableName) {
+  let results;
+  switch (tableName) {
+    case "products": {
+      const response = await fetch("/api/admin/products");
+      if (!response.ok) {
+        throw Error(`response bad status: ${response.status}`);
+      }
+      results = response.json();
+      break;
+    }
+    case "orders": {
+      const response = await fetch("/api/admin/orders");
+      if (!response.ok) {
+        throw Error(`response bad status: ${response.status}`);
+      }
+      results = response.json();
+      break;
+    }
+  }
+
+  return results;
 }

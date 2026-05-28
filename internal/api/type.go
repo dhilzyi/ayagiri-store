@@ -20,9 +20,11 @@ type CategoryRequest struct {
 }
 
 type CategoryResponse struct {
-	ID          int `json:"id"`
-	Name        string
-	EnglishName string `json:"english_name"`
+	ID          int32     `json:"id"`
+	Name        string    `json:"name"`
+	EnglishName string    `json:"english_name"`
+	CreatedAt   time.Time `json:"created_at"`
+	UpdatedAt   time.Time `json:"updated_at"`
 }
 
 type OrderResponse struct {

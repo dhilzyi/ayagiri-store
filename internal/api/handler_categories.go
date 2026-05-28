@@ -27,12 +27,12 @@ func (h *Handler) CreateCategory(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) ListCategories(w http.ResponseWriter, r *http.Request) {
-	categorys, err := h.db.GetCategories(context.Background())
+	categories, err := h.db.GetCategories(context.Background())
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error(), err)
 		return
 	}
-	respondWithJSON(w, 200, categorys)
+	respondWithJSON(w, http.StatusOK, toCategoriesResponse(categories))
 }
 
 func (h *Handler) CreateCategories(w http.ResponseWriter, r *http.Request) {

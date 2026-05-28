@@ -1,7 +1,6 @@
 package api
 
 import (
-	"database/sql"
 	"io"
 	"log"
 	"net/http"
@@ -79,28 +78,6 @@ func toProductRequest(p ProductRequest) database.CreateProductParams {
 		Price:       p.Price,
 		Discount:    p.Discount,
 		CategoryID:  p.CategoryID,
-	}
-}
-
-func toNullInt32(v *int32) sql.NullInt32 {
-	if v == nil {
-		return sql.NullInt32{Valid: false}
-	}
-	return sql.NullInt32{Int32: *v, Valid: true}
-}
-
-func toCategoryRequest(c CategoryRequest) database.CreateCategoryParams {
-	return database.CreateCategoryParams{
-		Name:        c.Name,
-		EnglishName: c.EnglishName,
-	}
-}
-
-func toCategoryResponse(c database.Category) CategoryResponse {
-	return CategoryResponse{
-		ID:          int(c.ID),
-		Name:        c.Name,
-		EnglishName: c.EnglishName,
 	}
 }
 
@@ -247,5 +224,19 @@ func toOrderItemsResponse(orderItems []database.GetOrderItemsRow) []OrderItemsRe
 		})
 	}
 
+	return responses
+}
+
+func toCategoriesResponse(categories []database.Category) []CategoryResponse {
+	responses := make([]CategoryResponse, 0, len(categories))
+	for _, c := range categories {
+		responses = append(responses, CategoryResponse{
+			ID:          c.ID,
+			CreatedAt:   c.CreatedAt.Time,
+			UpdatedAt:   c.UpdatedAt.Time,
+			EnglishName: c.EnglishName,
+			Name:        c.Name,
+		})
+	}
 	return responses
 }

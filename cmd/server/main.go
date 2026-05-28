@@ -53,8 +53,8 @@ func main() {
 	mux.HandleFunc("GET /api/admin/products", handler.ListProductsAdmin)
 	mux.HandleFunc("GET /api/admin/orders", handler.ListOrdersAdmin)
 	mux.HandleFunc("GET /api/admin/order_items", handler.ListOrderItemsAdmin)
+	mux.HandleFunc("GET /api/admin/categories", handler.ListCategories)
 
-	mux.HandleFunc("GET /api/categories", handler.ListCategories)
 	mux.HandleFunc("POST /api/categories", handler.CreateCategory)
 	mux.HandleFunc("POST /api/categories/bulk", handler.CreateCategories)
 

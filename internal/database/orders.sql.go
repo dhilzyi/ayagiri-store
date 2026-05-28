@@ -80,8 +80,59 @@ func (q *Queries) GetOrderByID(ctx context.Context, id uuid.UUID) (Order, error)
 	return i, err
 }
 
+const getOrderItems = `-- name: GetOrderItems :many
+SELECT
+  order_items.id, order_items.created_at, order_items.updated_at, order_items.order_id, order_items.product_id, order_items.quantity,
+  products.name AS product_name,
+  orders.order_complete
+FROM
+  order_items
+  INNER JOIN products ON order_items.product_id = products.id
+  INNER JOIN orders ON order_items.order_id = orders.id
+`
+
+type GetOrderItemsRow struct {
+	ID            int32
+	CreatedAt     pgtype.Timestamp
+	UpdatedAt     pgtype.Timestamp
+	OrderID       uuid.UUID
+	ProductID     int32
+	Quantity      int32
+	ProductName   string
+	OrderComplete bool
+}
+
+func (q *Queries) GetOrderItems(ctx context.Context) ([]GetOrderItemsRow, error) {
+	rows, err := q.db.Query(ctx, getOrderItems)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []GetOrderItemsRow
+	for rows.Next() {
+		var i GetOrderItemsRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.OrderID,
+			&i.ProductID,
+			&i.Quantity,
+			&i.ProductName,
+			&i.OrderComplete,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getOrders = `-- name: GetOrders :many
-SELEcT
+SELECT
   id, created_at, updated_at, table_id, order_complete
 FROM
   orders

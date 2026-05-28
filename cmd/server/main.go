@@ -51,6 +51,8 @@ func main() {
 
 	// Admin handler
 	mux.HandleFunc("GET /api/admin/products", handler.ListProductsAdmin)
+	mux.HandleFunc("GET /api/admin/orders", handler.ListOrdersAdmin)
+	mux.HandleFunc("GET /api/admin/order_items", handler.ListOrderItemsAdmin)
 
 	mux.HandleFunc("GET /api/categories", handler.ListCategories)
 	mux.HandleFunc("POST /api/categories", handler.CreateCategory)

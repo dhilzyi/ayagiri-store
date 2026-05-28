@@ -1,3 +1,13 @@
 ### 
 
 GET {{url}}/api/events/orders HTTP/1.1
+
+
+### GET ORDERS ROWS
+
+GET {{url}}/api/admin/orders HTTP/1.1
+
+
+### GET ORDER_ITEMS ROWS
+
+GET {{url}}/api/admin/order_items HTTP/1.1

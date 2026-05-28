@@ -9,8 +9,10 @@ import (
 
 	"restaurant/internal/database"
 	"restaurant/internal/domain"
+	"restaurant/internal/orders"
 
 	"github.com/goccy/go-json"
+	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
@@ -163,4 +165,87 @@ func toProductResponsesAdmin(p []database.GetProductsJoinRow) []domain.ProductRe
 	}
 
 	return results
+}
+
+func toOrderRequest(orderID uuid.UUID, order orders.Order) database.CreateOrderParams {
+	return database.CreateOrderParams{
+		ID:      orderID,
+		TableID: order.TableID,
+	}
+}
+
+func toBulkOrderItemRequest(orderID uuid.UUID, orderItems []orders.OrderItemRequest) []database.BulkCreateOrderItemParams {
+	var bulks []database.BulkCreateOrderItemParams
+	now := pgtype.Timestamp{Time: time.Now(), Valid: true}
+	for _, ord := range orderItems {
+		bulks = append(bulks, database.BulkCreateOrderItemParams{
+			OrderID:   orderID,
+			ProductID: ord.ProductID,
+			Quantity:  ord.Quantity,
+			CreatedAt: now,
+			UpdatedAt: now,
+		})
+	}
+	return bulks
+}
+
+func toProductIDs(items []orders.OrderItemRequest) []int32 {
+	var productIDs []int32
+	for _, i := range items {
+		productIDs = append(productIDs, i.ProductID)
+	}
+
+	return productIDs
+}
+
+func mapOrderResponse(reqItems []orders.OrderItemRequest, dbProducts []domain.ProductResponse) []orders.OrderItemResponse {
+	qtyMap := make(map[int32]int32)
+	for _, reqItem := range reqItems {
+		qtyMap[reqItem.ProductID] = reqItem.Quantity
+	}
+
+	responses := make([]orders.OrderItemResponse, len(dbProducts))
+	for i, prod := range dbProducts {
+		quantity := qtyMap[prod.ID]
+
+		responses[i] = orders.OrderItemResponse{
+			Quantity: quantity,
+			Products: prod,
+		}
+	}
+
+	return responses
+}
+
+func toOrdersResponse(orders []database.Order) []OrderResponse {
+	responses := make([]OrderResponse, 0, len(orders))
+	for _, o := range orders {
+		responses = append(responses, OrderResponse{
+			ID:            o.ID,
+			CreatedAt:     o.CreatedAt.Time,
+			UpdatedAt:     o.UpdatedAt.Time,
+			TableID:       o.TableID,
+			OrderComplete: o.OrderComplete,
+		})
+	}
+
+	return responses
+}
+
+func toOrderItemsResponse(orderItems []database.GetOrderItemsRow) []OrderItemsResponse {
+	responses := make([]OrderItemsResponse, 0, len(orderItems))
+	for _, o := range orderItems {
+		responses = append(responses, OrderItemsResponse{
+			ID:            o.ID,
+			CreatedAt:     o.CreatedAt.Time,
+			UpdatedAt:     o.UpdatedAt.Time,
+			OrderID:       o.OrderID,
+			ProductID:     o.ProductID,
+			Quantity:      o.Quantity,
+			ProductName:   o.ProductName,
+			OrderComplete: o.OrderComplete,
+		})
+	}
+
+	return responses
 }

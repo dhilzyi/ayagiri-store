@@ -1,5 +1,11 @@
 package api
 
+import (
+	"time"
+
+	"github.com/google/uuid"
+)
+
 type ProductRequest struct {
 	Name        string
 	EnglishName string `json:"english_name"`
@@ -17,4 +23,23 @@ type CategoryResponse struct {
 	ID          int `json:"id"`
 	Name        string
 	EnglishName string `json:"english_name"`
+}
+
+type OrderResponse struct {
+	ID            uuid.UUID `json:"id"`
+	CreatedAt     time.Time `json:"created_at"`
+	UpdatedAt     time.Time `json:"updated_at"`
+	TableID       int32     `json:"table_id"`
+	OrderComplete bool      `json:"order_complete"`
+}
+
+type OrderItemsResponse struct {
+	ID            int32     `json:"id"`
+	CreatedAt     time.Time `json:"created_at"`
+	UpdatedAt     time.Time `json:"updated_at"`
+	OrderID       uuid.UUID `json:"order_id"`
+	ProductID     int32     `json:"product_id"`
+	Quantity      int32     `json:"quantity"`
+	ProductName   string    `json:"product_name"`
+	OrderComplete bool      `json:"order_complete"`
 }

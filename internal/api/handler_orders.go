@@ -6,13 +6,10 @@ import (
 	"log"
 	"net/http"
 	"restaurant/internal/database"
-	"restaurant/internal/domain"
 	"restaurant/internal/orders"
-	"time"
 
 	"github.com/goccy/go-json"
 	"github.com/google/uuid"
-	"github.com/jackc/pgx/v5/pgtype"
 )
 
 func (h *Handler) CreateOrder(w http.ResponseWriter, r *http.Request) {
@@ -248,52 +245,22 @@ func (h *Handler) CompleteOrder(w http.ResponseWriter, r *http.Request) {
 	respondWithJSON(w, http.StatusOK, "")
 }
 
-func toOrderRequest(orderID uuid.UUID, order orders.Order) database.CreateOrderParams {
-	return database.CreateOrderParams{
-		ID:      orderID,
-		TableID: order.TableID,
+func (h *Handler) ListOrdersAdmin(w http.ResponseWriter, r *http.Request) {
+	orders, err := h.db.GetOrders(context.Background())
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, err.Error(), err)
+		return
 	}
+
+	respondWithJSON(w, http.StatusOK, toOrdersResponse(orders))
 }
 
-func toBulkOrderItemRequest(orderID uuid.UUID, orderItems []orders.OrderItemRequest) []database.BulkCreateOrderItemParams {
-	var bulks []database.BulkCreateOrderItemParams
-	now := pgtype.Timestamp{Time: time.Now(), Valid: true}
-	for _, ord := range orderItems {
-		bulks = append(bulks, database.BulkCreateOrderItemParams{
-			OrderID:   orderID,
-			ProductID: ord.ProductID,
-			Quantity:  ord.Quantity,
-			CreatedAt: now,
-			UpdatedAt: now,
-		})
-	}
-	return bulks
-}
-
-func toProductIDs(items []orders.OrderItemRequest) []int32 {
-	var productIDs []int32
-	for _, i := range items {
-		productIDs = append(productIDs, i.ProductID)
+func (h *Handler) ListOrderItemsAdmin(w http.ResponseWriter, r *http.Request) {
+	orderItems, err := h.db.GetOrderItems(context.Background())
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, err.Error(), err)
+		return
 	}
 
-	return productIDs
-}
-
-func mapOrderResponse(reqItems []orders.OrderItemRequest, dbProducts []domain.ProductResponse) []orders.OrderItemResponse {
-	qtyMap := make(map[int32]int32)
-	for _, reqItem := range reqItems {
-		qtyMap[reqItem.ProductID] = reqItem.Quantity
-	}
-
-	responses := make([]orders.OrderItemResponse, len(dbProducts))
-	for i, prod := range dbProducts {
-		quantity := qtyMap[prod.ID]
-
-		responses[i] = orders.OrderItemResponse{
-			Quantity: quantity,
-			Products: prod,
-		}
-	}
-
-	return responses
+	respondWithJSON(w, http.StatusOK, toOrderItemsResponse(orderItems))
 }

@@ -32,7 +32,7 @@ VALUES
   ($1, $2, $3, $4, $5);
 
 -- name: GetOrders :many
-SELEcT
+SELECT
   *
 FROM
   orders;
@@ -45,3 +45,13 @@ WHERE
   id = $2
 RETURNING
   *;
+
+-- name: GetOrderItems :many
+SELECT
+  order_items.*,
+  products.name AS product_name,
+  orders.order_complete
+FROM
+  order_items
+  INNER JOIN products ON order_items.product_id = products.id
+  INNER JOIN orders ON order_items.order_id = orders.id;

@@ -1,11 +1,82 @@
 import { prettyTimestamp } from "../ui/helpers.js";
 import { dbControl } from "./database.js";
 
-export function addRows(products, lastRowNumber) {
+export function updateHeader(tableName) {
+  const trHead = document.querySelector(".database-table thead tr");
+  let newHead;
+  switch (tableName) {
+    case "products": {
+      newHead = `
+	<th class="input-cell" id="all-select">
+		<input type="checkbox" />
+	</th>
+	<th>#</th>
+	<th class="product-id">商品_ID <span>⇅</span></th>
+	<th class="product-name">商品名</th>
+	<th class="price">値段⇅</th>
+	<th class="discount">割引⇅</th>
+	<th class="category">カテゴリー⇅</th>
+	<th class="created-at">作成日⇅</th>
+	<th class="updated-at">最終変更日⇅</th>
+`;
+      break;
+    }
+    case "orders": {
+      newHead = `
+	<th class="input-cell" id="all-select">
+		<input type="checkbox" />
+	</th>
+	<th>#</th>
+	<th class="order-id">注文_ID</th>
+	<th class="table-id">席番</th>
+	<th class="order-complete">注文状況⇅</th>
+	<th class="created-at">作成日⇅</th>
+	<th class="updated-at">最終変更日⇅</th>
+`;
+      break;
+    }
+    case "order_items": {
+      newHead = `
+	<th class="input-cell" id="all-select">
+		<input type="checkbox" />
+	</th>
+	<th>#</th>
+	<th class="order-item-id">注文品_ID <span>⇅</span></th>
+	<th class="order-id">注文_ID</th>
+	<th class="product-name">商品名</th>
+	<th class="quantity">個数</th>
+	<th class="order-complete">注文状況⇅</th>
+	<th class="created-at">作成日⇅</th>
+	<th class="updated-at">最終変更日⇅</th>
+`;
+      break;
+    }
+    case "categories": {
+      newHead = `
+	<th class="input-cell" id="all-select">
+		<input type="checkbox" />
+	</th>
+	<th>#</th>
+	<th class="category-id">カテゴリー_ID <span>⇅</span></th>
+	<th class="category-name">名前</th>
+	<th class="cateogry-english-name">英語の名前</th>
+	<th class="created-at">作成日⇅</th>
+	<th class="updated-at">最終変更日⇅</th>
+`;
+      break;
+    }
+  }
+  trHead.innerHTML = newHead;
+}
+
+export function addRows(data, lastRowNumber, tableName) {
   const tableBody = document.querySelector(".database-table tbody");
   const newRows = [];
-  products.forEach((p) => {
-    const row = `
+  data.forEach((p) => {
+    let row;
+    switch (tableName) {
+      case "products":
+        row = `
 	<tr>
 		<th class="input-cell"><input type="checkbox" /></th>
 		<td>${lastRowNumber}</td>
@@ -18,6 +89,51 @@ export function addRows(products, lastRowNumber) {
 		<td class="last-updated">${prettyTimestamp(p.updated_at)}</td>
 	</tr>
 `;
+        break;
+      case "orders":
+        row = `
+	<tr>
+		<th class="input-cell"><input type="checkbox" /></th>
+		<td>${lastRowNumber}</td>
+		<td class="order-id">${p.id}</td>
+		<td class="table-id">${p.table_id}</td>
+		<td class="order-complete">${p.order_complete ? "完了" : "未完了"}</td>
+		<td class="created-at">${prettyTimestamp(p.created_at)}</td>
+		<td class="last-updated">${prettyTimestamp(p.updated_at)}</td>
+	</tr>
+`;
+        break;
+      case "order_items": {
+        row = `
+	<tr>
+		<th class="input-cell"><input type="checkbox" /></th>
+		<td>${lastRowNumber}</td>
+		<td class="order-item-id">${p.id}</td>
+		<td class="order-id">${p.order_id}</td>
+		<td class="product-name">${p.product_name}</td>
+		<td class="quantity">${p.quantity}</td>
+		<td class="order-complete">${p.order_complete ? "完了" : "未完了"}</td>
+		<td class="created-at">${prettyTimestamp(p.created_at)}</td>
+		<td class="last-updated">${prettyTimestamp(p.updated_at)}</td>
+	</tr>
+`;
+        break;
+      }
+      case "categories": {
+        row = `
+	<tr>
+		<td class="input-cell"><input type="checkbox" /></td>
+		<td>${lastRowNumber}</td>
+		<td class="category_id">${p.id}</td>
+		<td class="category-name">${p.name}</td>
+		<td class="cateogry-english-name">${p.english_name}</td>
+		<td class="created-at">${prettyTimestamp(p.created_at)}</td>
+		<td class="last-updated">${prettyTimestamp(p.updated_at)}</td>
+	</tr>
+`;
+        break;
+      }
+    }
     newRows.push(row);
     lastRowNumber++;
   });
@@ -67,7 +183,7 @@ function getPageArray(totalPages, currentPage) {
 
 export function renderPaginationBar(totalPages, currentPage) {
   const listContainer = document.getElementById("pagination-list");
-  listContainer.innerHTML = ""; // Clear the old list
+  listContainer.innerHTML = "";
 
   const pageItems = getPageArray(totalPages, currentPage);
 
@@ -76,7 +192,7 @@ export function renderPaginationBar(totalPages, currentPage) {
 
     if (item === "...") {
       // Draw dots
-      li.innerHTML = `<span class="pagination-dots">...</span>`;
+      li.innerHTML = `<button class="pagination-dots">...</button>`;
     } else {
       // Draw standard page button
       const isActive = item === currentPage ? "active" : "";
@@ -92,24 +208,35 @@ export function renderPaginationBar(totalPages, currentPage) {
     currentPage === totalPages;
 }
 
-export function btnListen() {
+export function renderInformation(total, start, end) {
+  const infoSpan = document.querySelector(
+    ".database-pagination-header .left span",
+  );
+  infoSpan.textContent = `${total}件の結果のうち、${start}～${end}件を表示しています`;
+}
+
+export function initBtnListen() {
   let select = false;
-  document.getElementById("all-select").addEventListener("change", () => {
-    select = !select;
-    selectAll(select);
-  });
+  document
+    .querySelector(".database-table thead")
+    .addEventListener("change", (ele) => {
+      if (ele.target.type != "checkbox") return;
+      select = !select;
+      selectAll(select);
+      console.log("select");
+    });
   document.getElementById("pagination-next").addEventListener("click", () => {
-    dbControl.renderNextRow("products");
+    dbControl.renderNextRow();
   });
   document.getElementById("pagination-prev").addEventListener("click", () => {
-    dbControl.renderPrevRow("products");
+    dbControl.renderPrevRow();
   });
   document.getElementById("pagination-list").addEventListener("click", (e) => {
     const card = e.target;
     if (!card.dataset.page || dbControl.currentPage === card.dataset.page) {
       return;
     }
-    dbControl.renderPage("products", Number(card.dataset.page));
+    dbControl.renderPage(Number(card.dataset.page));
   });
 }
 
@@ -118,4 +245,21 @@ function selectAll(state) {
   inputList.forEach((ele) => {
     ele.checked = state;
   });
+}
+
+export async function initSelect() {
+  const databaseSelect = document.getElementById("database-select");
+  const perPage = document.getElementById("result-per-page-opt");
+  databaseSelect.addEventListener("change", () => {
+    console.log(databaseSelect.value);
+    dbControl.changeTable(databaseSelect.value);
+  });
+  perPage.addEventListener("change", async () => {
+    await dbControl.setItemsPerPage(Number(perPage.value));
+    dbControl.renderPage(dbControl.currentPage);
+  });
+  await dbControl.setItemsPerPage(Number(perPage.value));
+  console.log(perPage.value);
+  await dbControl.changeTable(databaseSelect.value);
+  dbControl.renderPage(1);
 }

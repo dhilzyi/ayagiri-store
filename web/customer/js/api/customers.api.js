@@ -11,7 +11,7 @@ export async function loadProductsByCategory(categoryID) {
 }
 
 export async function loadProducts() {
-  const res = await fetch(`/api/product`);
+  const res = await fetch(`/api/products`);
   if (!res.ok) {
     throw Error(`response bad status: ${res.status}`);
   }

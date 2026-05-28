@@ -54,25 +54,31 @@ export async function sendComplete(orderID) {
 }
 
 export async function fetchDatabase(tableName) {
-  let results;
+  let url;
   switch (tableName) {
     case "products": {
-      const response = await fetch("/api/admin/products");
-      if (!response.ok) {
-        throw Error(`response bad status: ${response.status}`);
-      }
-      results = response.json();
+      url = "/api/admin/products";
       break;
     }
     case "orders": {
-      const response = await fetch("/api/admin/orders");
-      if (!response.ok) {
-        throw Error(`response bad status: ${response.status}`);
-      }
-      results = response.json();
+      url = "/api/admin/orders";
+      break;
+    }
+    case "order_items": {
+      url = "/api/admin/order_items";
+      break;
+    }
+    case "categories": {
+      url = "/api/admin/categories";
       break;
     }
   }
+
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw Error(`response bad status: ${response.status}`);
+  }
+  const results = response.json();
 
   return results;
 }

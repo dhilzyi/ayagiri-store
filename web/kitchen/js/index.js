@@ -18,16 +18,8 @@ function initMainListeners() {
   });
 }
 
-function initSelect() {
-  const databaseSelect = document.getElementById("database-select");
-  databaseSelect.addEventListener("change", () => {
-    console.log(databaseSelect.value);
-  });
-}
-
-initSelect();
 initMainListeners();
 initListeners();
 initDatabase();
-// initSSEListen();
-// startGlobalTimer();
+initSSEListen();
+startGlobalTimer();

@@ -60,6 +60,12 @@
   width: 100%;
   height: 100%;
   background-color: lightskyblue;
+
+  th,
+  td {
+    border: 2px solid black;
+    padding: 5px;
+  }
 }
 
 .database-table {
@@ -75,11 +81,11 @@
       height: 20px;
     }
   }
+  .product-name {
+    width: 30rem;
+  }
 }
 
-.database-table .product-name {
-  width: 45rem;
-}
 /* .database-table .product-id { */
 /*   width: 6rem; */
 /* } */
@@ -95,12 +101,6 @@
 /* .database-table .created-at { */
 /*   width: 7rem; */
 /* } */
-
-.table-container th,
-.table-container td {
-  border: 2px solid black;
-  padding: 5px;
-}
 
 .database-pagination-footer {
   width: 100%;
@@ -123,10 +123,10 @@
 .pagination-items {
   margin: 0;
   padding: 0;
-}
 
-.pagination-items li {
-  list-style: none;
+  li {
+    list-style: none;
+  }
 }
 
 .pagination button {

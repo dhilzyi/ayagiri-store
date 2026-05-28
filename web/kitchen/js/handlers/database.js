@@ -1,84 +1,116 @@
 import { fetchDatabase } from "../api/kitchen-api.js";
-import { addRows, btnListen, renderPaginationBar } from "./database.ui.js";
+import {
+  addRows,
+  initBtnListen,
+  initSelect,
+  renderInformation,
+  renderPaginationBar,
+  updateHeader,
+} from "./database.ui.js";
 
 class DbController {
   constructor() {
     this.table = new Map();
     this.currentPage = 1;
-    this.itemsPerPage = 10;
+    this.itemsPerPage;
     this.currentTable;
+    this.currentHeader;
   }
 
   addDatabase(key, value) {
     this.table[key] = value;
   }
 
-  renderPage(table, pageNum) {
-    // 1. Calculate the start index (This is exactly SQL OFFSET!)
+  renderPage(pageNum) {
+    // Calculate the start index
     const startIndex = (pageNum - 1) * this.itemsPerPage;
 
-    // 2. Calculate the end index (This is exactly OFFSET + LIMIT)
+    // Calculate the end index
     const endIndex = Math.min(
       startIndex + this.itemsPerPage,
-      this.table[table].length,
+      this.table[this.currentTable].length,
     );
 
-    // 3. Slice the data safely
-    const pageData = this.table[table].slice(startIndex, endIndex);
+    // Slice the data safely
+    const pageData = this.table[this.currentTable].slice(startIndex, endIndex);
 
-    // 4. Render the rows (passing the starting row number for the UI, e.g., 11)
-    addRows(pageData, startIndex + 1);
+    // Render the rows (passing the starting row number for the UI, e.g., 11)
+    addRows(pageData, startIndex + 1, this.currentTable);
 
-    // 5. Update the current page state
+    // Update the current page state
     this.currentPage = pageNum;
     console.log("Current Page:", this.currentPage);
-    const totalPages = Math.ceil(this.table[table].length / this.itemsPerPage);
+    const totalPages = Math.ceil(
+      this.table[this.currentTable].length / this.itemsPerPage,
+    );
     renderPaginationBar(totalPages, this.currentPage);
+    renderInformation(
+      this.table[this.currentTable].length,
+      startIndex + 1,
+      endIndex,
+    );
   }
 
-  renderNextRow(table) {
-    const totalPages = Math.ceil(this.table[table].length / this.itemsPerPage);
+  renderNextRow() {
+    const totalPages = Math.ceil(
+      this.table[this.currentTable].length / this.itemsPerPage,
+    );
 
     // Boundary check: Don't go past the last page
     if (this.currentPage >= totalPages) {
       return;
     }
 
-    this.renderPage(table, this.currentPage + 1);
+    this.renderPage(this.currentPage + 1);
   }
 
-  renderPrevRow(table) {
+  renderPrevRow() {
     // Boundary check: Don't go before page 1
     if (this.currentPage <= 1) {
       return;
     }
 
-    this.renderPage(table, this.currentPage - 1);
+    this.renderPage(this.currentPage - 1);
   }
 
-  changeTable(tableName) {
+  // Change Table Database
+  async changeTable(tableName) {
     if (this.currentTable == tableName) {
       return;
     }
-    if (!this.table.has(tableName)) {
-      throw Error("the key does not exist in the map");
+    if (!Object.hasOwn(this.table, tableName)) {
+      try {
+        const data = await fetchDatabase(tableName);
+        this.addDatabase(tableName, data);
+      } catch (err) {
+        throw err;
+      }
     }
+
     this.currentTable = tableName;
+    this.currentHeader = tableName;
+    updateHeader(tableName);
+    this.renderPage(1);
   }
 
   getTotalPages() {
     return Math.ceil(this.table[this.currentTable].length / this.itemsPerPage);
+  }
+
+  // async settting items per page
+  async setItemsPerPage(value) {
+    this.itemsPerPage = value;
   }
 }
 
 export const dbControl = new DbController();
 
 export async function initDatabase() {
-  const products = await fetchDatabase("products");
-  console.log(products);
-  dbControl.addDatabase("products", products);
+  // const products = await fetchDatabase("products");
+  // dbControl.addDatabase("products", products);
   // dbControl.changeTable("products");
-  dbControl.renderPage("products", 1);
+  // await dbControl.changeTable("products");
   // dbControl.renderNextRow("products");
-  btnListen();
+  initBtnListen();
+  initSelect();
 }

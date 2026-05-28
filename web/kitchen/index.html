@@ -93,12 +93,15 @@
             <label for="database-select">データベースを選択:</label>
             <select name="database-select" id="database-select">
               <option value="products">商品覧</option>
+              <option value="categories">カテゴリー覧</option>
               <option value="orders">注文覧</option>
-              <option value="order-items">注文品覧</option>
+              <option value="order_items">注文品覧</option>
             </select>
           </div>
           <div>
-            <button id="edit-selected">選択項目を変更する</button>
+            <span>アクション:</span>
+            <button id="delete-btn">削除</button>
+            <button id="edit-btn">変更</button>
             <button id="new-order-btn">+新しい項目を作成</button>
           </div>
         </div>
@@ -111,14 +114,13 @@
               </form>
             </search>
             <button class="filter-btn">フィ</button>
-            <span>64件の結果のうち、11～20件を表示しています</span>
+            <span></span>
           </div>
           <div class="right">
-            <label for="result-page">1ページあたりの件数</label>
-            <select name="result-page" id="">
+            <label for="result-per-page">1ページあたりの件数</label>
+            <select name="result-per-page" id="result-per-page-opt">
               <option value="10">10</option>
-              <option value="10">20</option>
-              <option value="10">50</option>
+              <option value="20">20</option>
             </select>
           </div>
         </div>

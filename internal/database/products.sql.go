@@ -142,6 +142,46 @@ func (q *Queries) GetProductByID(ctx context.Context, id int32) (Product, error)
 	return i, err
 }
 
+const getProductJoinByID = `-- name: GetProductJoinByID :one
+SELECT
+  products.id, products.created_at, products.updated_at, products.name, products.english_name, products.price, products.category_id, products.discount,
+  categories.name AS category_name
+FROM
+  products
+  INNER JOIN categories ON products.category_id = categories.id
+WHERE
+  products.id = $1
+`
+
+type GetProductJoinByIDRow struct {
+	ID           int32
+	CreatedAt    pgtype.Timestamp
+	UpdatedAt    pgtype.Timestamp
+	Name         string
+	EnglishName  string
+	Price        int32
+	CategoryID   int32
+	Discount     int32
+	CategoryName string
+}
+
+func (q *Queries) GetProductJoinByID(ctx context.Context, id int32) (GetProductJoinByIDRow, error) {
+	row := q.db.QueryRow(ctx, getProductJoinByID, id)
+	var i GetProductJoinByIDRow
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.Name,
+		&i.EnglishName,
+		&i.Price,
+		&i.CategoryID,
+		&i.Discount,
+		&i.CategoryName,
+	)
+	return i, err
+}
+
 const getProducts = `-- name: GetProducts :many
 SElECT
   id, created_at, updated_at, name, english_name, price, category_id, discount

@@ -17,7 +17,7 @@ func (h *Handler) ListProducts(w http.ResponseWriter, r *http.Request) {
 	if categoryIDStr != "" {
 		categoryID, err := strconv.Atoi(categoryIDStr)
 		if err != nil {
-			respondWithError(w, http.StatusBadRequest, "Invalid categoryID", err)
+			respondWithError(w, http.StatusUnprocessableEntity, "Invalid categoryID", err)
 			return
 		}
 		products, err = h.db.GetProductByCategoryID(context.Background(), int32(categoryID))
@@ -45,12 +45,18 @@ func (h *Handler) CreateProduct(w http.ResponseWriter, r *http.Request) {
 		respondWithError(w, http.StatusBadRequest, err.Error(), err)
 		return
 	}
-	product, err := h.db.CreateProduct(context.Background(), toProductRequest(productReq))
+	ctx := context.Background()
+	product, err := h.db.CreateProduct(ctx, toProductRequest(productReq))
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error(), err)
 		return
 	}
-	respondWithJSON(w, http.StatusCreated, product)
+	productJoin, err := h.db.GetProductJoinByID(ctx, product.ID)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, err.Error(), err)
+		return
+	}
+	respondWithJSON(w, http.StatusCreated, toProductResponseJoin(productJoin))
 }
 
 func (h *Handler) CreateProducts(w http.ResponseWriter, r *http.Request) {

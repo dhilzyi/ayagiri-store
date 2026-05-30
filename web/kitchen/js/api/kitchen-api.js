@@ -23,7 +23,6 @@ export function initSSEListen() {
 
   eventSource.onmessage = (event) => {
     const eventData = JSON.parse(event.data);
-    console.log(JSON.stringify(eventData.payload));
     switch (eventData.type) {
       case "ADD_ORDER":
         console.log("ADD", eventData.payload.order_id);
@@ -81,4 +80,19 @@ export async function fetchDatabase(tableName) {
   const results = response.json();
 
   return results;
+}
+
+export async function sendNewRows(data, tableName) {
+  const url = `/api/${tableName}`;
+
+  const response = await fetch(url, { method: "POST", body: data });
+  if (!response.ok) {
+    const err = new Error(`Failed to send data`);
+
+    err.body = response.json();
+    err.status = response.status;
+
+    throw err;
+  }
+  return response;
 }

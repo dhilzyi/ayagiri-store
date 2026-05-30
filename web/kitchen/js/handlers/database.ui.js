@@ -1,3 +1,4 @@
+import { sendNewRows } from "../api/kitchen-api.js";
 import { prettyTimestamp } from "../ui/helpers.js";
 import { dbControl } from "./database.js";
 
@@ -240,11 +241,107 @@ export function initBtnListen() {
   });
 }
 
+export function initPopup() {
+  const form = document.getElementById("popup-form");
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const table = form.dataset.table;
+    const formData = new FormData(form);
+
+    let data = Object.fromEntries(formData);
+    data = parseDataForm(data, table);
+    try {
+      const response = await sendNewRows(JSON.stringify(data), table);
+
+      renderResults({ status: response.status }, "success");
+      dbControl.addRowToTable(await response.json());
+    } catch (err) {
+      const errData = (await err.body) || {};
+      console.log(err);
+      errData.status = err.status || 500;
+      errData.message = err.error;
+
+      renderResults(errData, "error");
+      return;
+    }
+
+    dbControl.renderPage(dbControl.getTotalPages());
+    // form.reset();
+  });
+
+  const modal = document.getElementById("create-row");
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) {
+      modal.close();
+    }
+  });
+
+  // DEBUG POP UP
+  modal.showModal();
+
+  document.querySelector(".action .right").addEventListener("click", (e) => {
+    const cardId = e.target.id;
+    if (!cardId) return;
+    switch (cardId) {
+      case "new-order-btn": {
+        modal.showModal();
+        break;
+      }
+    }
+  });
+  document.getElementById("popup-cancel-btn").addEventListener("click", () => {
+    modal.close();
+  });
+}
+
+function parseDataForm(data, tableName) {
+  switch (tableName) {
+    case "products": {
+      data.price = parseInt(data.price, 10);
+      data.category_id = parseInt(data.category_id, 10);
+      data.discount = data.discount ? parseInt(data.discount, 10) : 0;
+    }
+  }
+
+  return data;
+}
+
 function selectAll(state) {
   const inputList = document.querySelectorAll(".input-cell input");
   inputList.forEach((ele) => {
     ele.checked = state;
   });
+}
+
+function renderResults(data, result) {
+  const submitResult = document.querySelector("div.submit-result");
+  switch (result) {
+    case "success": {
+      submitResult.innerHTML = `
+	<h4 class="result-title">送信が完了しました</h4>
+	<p class="result-code">ステータスコード: <span>${data.status}</span></p>
+	<p class="result-help">データは正常に登録されました。</p>
+`;
+      submitResult.classList.remove("error");
+      submitResult.classList.add("success");
+      break;
+    }
+    case "error": {
+      submitResult.innerHTML = `
+	<h4 class="result-title">送信に失敗しました</h4>
+	<p class="result-code">エラーコード: <span>${data.status}</span></p>
+	<p class="result-details">エラー詳細: ${data.error}</p>
+	<p class="result-help">
+		もう一度お試しください。<br />
+		解決しない場合は、システム管理者までご連絡ください。
+	</p>
+`;
+      submitResult.classList.remove("success");
+      submitResult.classList.add("error");
+      break;
+    }
+  }
 }
 
 export async function initSelect() {

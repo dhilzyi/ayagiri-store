@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="styles.css" />
     <link rel="stylesheet" href="./css/components/order-status.css" />
     <link rel="stylesheet" href="./css/components/database.css" />
+    <link rel="stylesheet" href="./css/components/popup.css" />
   </head>
   <body>
     <header class="main-header">
@@ -48,12 +49,12 @@
         <span class="status-text">接続待ち (Connecting...)</span>
       </div>
       <div class="summary-box">
-        <!-- Using standard POS terms -->
         <p>待機オーダー： <span class="summary-number">0</span> 件</p>
         <p>調理待ちアイテム： <span class="summary-number">4</span> 品</p>
       </div>
 
       <div class="order-list">
+        <span>現在オーダーはありません。</span>
         <!-- Order Card 1 -->
         <!-- <div class="order-card" id="order-001"> -->
         <!--   <div class="order-header"> -->
@@ -81,7 +82,6 @@
 
     <!-- DATABASE SECTIONS-->
     <section class="database active" data-section-id="3">
-      <h1>データベース</h1>
       <div class="database-body">
         <!-- <div class="database-header"> -->
         <!--   <h2>商品</h2> -->
@@ -92,13 +92,13 @@
           <div>
             <label for="database-select">データベースを選択:</label>
             <select name="database-select" id="database-select">
-              <option value="products">商品覧</option>
-              <option value="categories">カテゴリー覧</option>
-              <option value="orders">注文覧</option>
-              <option value="order_items">注文品覧</option>
+              <option value="products">商品一覧</option>
+              <option value="categories">カテゴリー一覧</option>
+              <option value="orders">注文一覧</option>
+              <option value="order_items">注文品一覧</option>
             </select>
           </div>
-          <div>
+          <div class="right">
             <span>アクション:</span>
             <button id="delete-btn">削除</button>
             <button id="edit-btn">変更</button>
@@ -128,42 +128,11 @@
           <table class="database-table">
             <thead>
               <tr>
-                <th class="input-cell" id="all-select">
-                  <input type="checkbox" />
-                </th>
-                <th>#</th>
-                <th class="product-id">商品_ID <span>⇅</span></th>
-                <th class="product-name">商品名</th>
-                <th class="price">値段⇅</th>
-                <th class="discount">割引⇅</th>
-                <th class="category">カテゴリー⇅</th>
-                <th class="created-at">作成日⇅</th>
-                <th class="updated-at">最終変更日⇅</th>
+                <!-- table header filled dynamically -->
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <th class="input-cell"><input type="checkbox" /></th>
-                <td>1</td>
-                <td class="product-id">8</td>
-                <td class="product-name">ラーメン</td>
-                <td>￥1000</td>
-                <td class="discount">0</td>
-                <td class="category">料理</td>
-                <td class="created-at">10/04/2024</td>
-                <td class="last-updated">10/04/2024</td>
-              </tr>
-              <tr>
-                <th class="input-cell"><input type="checkbox" /></th>
-                <td>1</td>
-                <td class="product-id">8</td>
-                <td class="product-name">ラーメン</td>
-                <td>￥1000</td>
-                <td class="discount">0</td>
-                <td class="category">料理</td>
-                <td class="created-at">10/04/2024</td>
-                <td class="last-updated">10/04/2024</td>
-              </tr>
+              <!-- table body filled dynamically -->
             </tbody>
           </table>
           <div class="database-pagination-footer">
@@ -178,6 +147,64 @@
         </div>
       </div>
     </section>
+
+    <!-- POP UP SECTION -->
+    <dialog id="create-row">
+      <div class="popup-layout">
+        <div class="create-popup-header">
+          <h4>新規商品の追加</h4>
+          <p>
+            入力された内容は商品一覧に直接追加されます。内容をご確認ください。
+          </p>
+        </div>
+        <form class="create-popup-body" id="popup-form" data-table="products">
+          <div class="input-container">
+            <div>
+              <p class="required">商品名</p>
+              <input type="text" name="name" required placeholder="ラーメン" />
+            </div>
+            <div>
+              <p class="required">英語の商品名</p>
+              <input type="text" name="english_name" placeholder="Ramen" />
+            </div>
+            <div>
+              <p class="required">値段 <span>*円建て</span></p>
+              <input
+                type="number"
+                name="price"
+                required
+                min="0"
+                placeholder="800"
+              />
+            </div>
+            <div>
+              <p class="required">カテゴリー</p>
+              <select name="category_id" id="" required>
+                <option value="" disabled selected>
+                  カテゴリーを選択してください
+                </option>
+                <option value="1">おすすめ</option>
+                <option value="2">ドリンク</option>
+              </select>
+            </div>
+            <div>
+              <p>割引</p>
+              <input type="number" name="discount" placeholder="0" />
+            </div>
+          </div>
+          <div class="info-post">
+            <div class="submit-result">
+              <!-- Will be filled dynamically according to the results -->
+              <p>ここに送信結果が表示されます。</p>
+            </div>
+          </div>
+        </form>
+        <div class="create-popup-footer">
+          <button id="popup-cancel-btn">キャンセル</button>
+          <button type="submit" form="popup-form">入力する</button>
+        </div>
+      </div>
+    </dialog>
     <script type="module" src="./js/index.js"></script>
   </body>
 </html>

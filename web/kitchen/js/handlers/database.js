@@ -2,6 +2,7 @@ import { fetchDatabase } from "../api/kitchen-api.js";
 import {
   addRows,
   initBtnListen,
+  initPopup,
   initSelect,
   renderInformation,
   renderPaginationBar,
@@ -19,6 +20,12 @@ class DbController {
 
   addDatabase(key, value) {
     this.table[key] = value;
+  }
+
+  addRowToTable(data) {
+    console.log(data);
+    this.table[this.currentTable].push(data);
+    console.log(this.table[this.currentTable]);
   }
 
   renderPage(pageNum) {
@@ -111,6 +118,7 @@ export async function initDatabase() {
   // dbControl.changeTable("products");
   // await dbControl.changeTable("products");
   // dbControl.renderNextRow("products");
+  await initSelect();
   initBtnListen();
-  initSelect();
+  initPopup();
 }

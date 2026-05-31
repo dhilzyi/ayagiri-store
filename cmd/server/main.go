@@ -47,6 +47,7 @@ func main() {
 
 	mux.HandleFunc("GET /api/products", handler.ListProducts)
 	mux.HandleFunc("POST /api/products", handler.CreateProduct)
+	mux.HandleFunc("DELETE /api/products", handler.DeleteProducts)
 	mux.HandleFunc("POST /api/products/bulk", handler.CreateProducts)
 
 	// Admin handler

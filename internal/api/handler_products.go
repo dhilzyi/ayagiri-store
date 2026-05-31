@@ -87,3 +87,31 @@ func (h *Handler) ListProductsAdmin(w http.ResponseWriter, r *http.Request) {
 
 	respondWithJSON(w, http.StatusOK, toProductResponsesAdmin(products))
 }
+
+func (h *Handler) DeleteProducts(w http.ResponseWriter, r *http.Request) {
+	var productIDsReq DelProductIdsReq
+	if err := decodeJson(r.Body, &productIDsReq); err != nil {
+		respondWithError(w, http.StatusBadRequest, err.Error(), err)
+		return
+	}
+	if err := h.db.DeleteProductsByID(context.Background(), productIDsReq.ProductIDs); err != nil {
+		respondWithError(w, http.StatusInternalServerError, err.Error(), err)
+		return
+	}
+
+	respondWithJSON(w, http.StatusNoContent, "")
+}
+
+func (h *Handler) UpdateProduct(w http.ResponseWriter, r *http.Request) {
+	var productReq ProductRequest
+	if err := decodeJson(r.Body, &productReq); err != nil {
+		respondWithError(w, http.StatusBadRequest, err.Error(), err)
+		return
+	}
+	if err := h.db.UpdateProductByID(context.Background(), database.UpdateProductByIDParams{}); err != nil {
+		respondWithError(w, http.StatusInternalServerError, err.Error(), err)
+		return
+	}
+
+	respondWithJSON(w, http.StatusNoContent, "")
+}

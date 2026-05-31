@@ -7,6 +7,7 @@ import (
 )
 
 type ProductRequest struct {
+	ProductID   int32 `json:"id"`
 	Name        string
 	EnglishName string `json:"english_name"`
 	Price       int32
@@ -44,4 +45,8 @@ type OrderItemsResponse struct {
 	Quantity      int32     `json:"quantity"`
 	ProductName   string    `json:"product_name"`
 	OrderComplete bool      `json:"order_complete"`
+}
+
+type DelProductIdsReq struct {
+	ProductIDs []int32 `json:"product_ids"`
 }

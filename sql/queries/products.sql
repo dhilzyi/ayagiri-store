@@ -102,3 +102,8 @@ FROM
   INNER JOIN categories ON products.category_id = categories.id
 WHERE
   products.id = $1;
+
+-- name: DeleteProductsByID :exec
+DELETE FROM products
+WHERE
+  id = ANY ($1::int[]);

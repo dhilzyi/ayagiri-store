@@ -96,3 +96,38 @@ export async function sendNewRows(data, tableName) {
   }
   return response;
 }
+
+export async function sendDeleteRows(ids, tableName) {
+  const url = `/api/${tableName}?ids=${ids.join(",")}`;
+  console.log(url);
+  const response = await fetch(url, {
+    method: "DELETE",
+  });
+  if (!response.ok) {
+    const err = new Error(`Failed to send data`);
+
+    err.body = response.json();
+    err.status = response.status;
+
+    throw err;
+  }
+
+  return response.status;
+}
+
+export async function sendUpdateRows(id, data, tableName) {
+  const url = `/api/${tableName}/${id}`;
+  const response = await fetch(url, {
+    method: "PUT",
+    body: data,
+  });
+  if (!response.ok) {
+    const err = new Error(`Failed to send data`);
+
+    err.body = response.json();
+    err.status = response.status;
+
+    throw err;
+  }
+  return { body: await response.json(), status: response.status };
+}

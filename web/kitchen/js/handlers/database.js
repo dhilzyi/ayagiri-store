@@ -1,13 +1,17 @@
-import { fetchDatabase } from "../api/kitchen-api.js";
+import { fetchDatabase, sendDeleteRows } from "../api/kitchen-api.js";
 import {
   addRows,
-  initBtnListen,
-  initPopup,
-  initSelect,
   renderInformation,
   renderPaginationBar,
   updateHeader,
 } from "./database.ui.js";
+
+import {
+  getSelectedIDs,
+  initBtnListen,
+  initPopup,
+  initTableDbSelect,
+} from "./database.events.js";
 
 class DbController {
   constructor() {
@@ -23,9 +27,7 @@ class DbController {
   }
 
   addRowToTable(data) {
-    console.log(data);
     this.table[this.currentTable].push(data);
-    console.log(this.table[this.currentTable]);
   }
 
   renderPage(pageNum) {
@@ -46,7 +48,6 @@ class DbController {
 
     // Update the current page state
     this.currentPage = pageNum;
-    console.log("Current Page:", this.currentPage);
     const totalPages = Math.ceil(
       this.table[this.currentTable].length / this.itemsPerPage,
     );
@@ -63,7 +64,6 @@ class DbController {
       this.table[this.currentTable].length / this.itemsPerPage,
     );
 
-    // Boundary check: Don't go past the last page
     if (this.currentPage >= totalPages) {
       return;
     }
@@ -72,7 +72,6 @@ class DbController {
   }
 
   renderPrevRow() {
-    // Boundary check: Don't go before page 1
     if (this.currentPage <= 1) {
       return;
     }
@@ -108,17 +107,73 @@ class DbController {
   async setItemsPerPage(value) {
     this.itemsPerPage = value;
   }
+
+  async deleteRows() {
+    const idsToDelete = getSelectedIDs();
+
+    if (idsToDelete.length === 0) return;
+
+    try {
+      await sendDeleteRows(idsToDelete, this.currentTable);
+    } catch (err) {
+      return;
+    }
+
+    const activeTableData = this.table[this.currentTable];
+    const updatedData = activeTableData.filter((item) => {
+      return !idsToDelete.includes(item.id);
+    });
+
+    this.table[this.currentTable] = updatedData;
+
+    if (this.currentPage > this.getTotalPages() && this.currentPage > 1) {
+      this.currentPage = this.getTotalPages();
+    }
+
+    this.renderPage(this.currentPage);
+  }
+
+  getDataByID(id) {
+    const index = binarySearch(this.table[this.currentTable], id);
+    if (index === -1) throw Error("no id is found in the table");
+    return this.table[this.currentTable][index];
+  }
+  async updateDataByID(id, data) {
+    const index = binarySearch(this.table[this.currentTable], id);
+    if (index === -1) throw Error("no id is found in the table");
+    const current = this.table[this.currentTable][index];
+    current.category_id = data.category_id;
+    current.discount = data.discount;
+    current.name = data.name;
+    current.price = data.price;
+  }
+}
+
+// It is guarantee the table is always in order because i use the query ASC
+function binarySearch(arr, val) {
+  let start = 0;
+  let end = arr.length - 1;
+
+  while (start <= end) {
+    let mid = Math.floor((start + end) / 2);
+
+    if (arr[mid].id === val) {
+      return mid;
+    }
+
+    if (val < arr[mid].id) {
+      end = mid - 1;
+    } else {
+      start = mid + 1;
+    }
+  }
+  return -1;
 }
 
 export const dbControl = new DbController();
 
 export async function initDatabase() {
-  // const products = await fetchDatabase("products");
-  // dbControl.addDatabase("products", products);
-  // dbControl.changeTable("products");
-  // await dbControl.changeTable("products");
-  // dbControl.renderNextRow("products");
-  await initSelect();
+  await initTableDbSelect();
   initBtnListen();
   initPopup();
 }

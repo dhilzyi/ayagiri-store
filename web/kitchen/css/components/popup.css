@@ -136,16 +136,13 @@ dialog {
 
 .required {
   &::after {
-    /* You can change it instantly across your whole site! */
     content: " (必須)";
     color: red;
 
     font-size: 0.6rem;
 
-    /* Adds a tiny gap between the text and the asterisk */
     margin-left: 4px;
 
-    /* Optional: Slightly raises the asterisk so it aligns nicely with text */
     vertical-align: middle;
   }
 }

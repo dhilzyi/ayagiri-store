@@ -152,19 +152,26 @@
     <dialog id="create-row">
       <div class="popup-layout">
         <div class="create-popup-header">
+          <!-- TODO: Change the h4 title to each action case -->
           <h4>新規商品の追加</h4>
           <p>
             入力された内容は商品一覧に直接追加されます。内容をご確認ください。
           </p>
         </div>
-        <form class="create-popup-body" id="popup-form" data-table="products">
+        <form
+          class="create-popup-body"
+          id="popup-form"
+          data-table="products"
+          data-action="add"
+        >
+          <!-- TODO: implement case for other table e.g categories -->
           <div class="input-container">
             <div>
               <p class="required">商品名</p>
               <input type="text" name="name" required placeholder="ラーメン" />
             </div>
             <div>
-              <p class="required">英語の商品名</p>
+              <p>英語名</p>
               <input type="text" name="english_name" placeholder="Ramen" />
             </div>
             <div>

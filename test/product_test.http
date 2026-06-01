@@ -15,8 +15,9 @@ Content-Type: application/json
 
 {
   "category_id": 1,
-  "name": "ラーメン",
-  "price": 700
+  "english_name": "p",
+  "name": "",
+  "price": 1
 }
 
 

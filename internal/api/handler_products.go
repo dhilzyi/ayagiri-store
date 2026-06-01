@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"restaurant/internal/database"
 )
@@ -45,6 +46,11 @@ func (h *Handler) CreateProduct(w http.ResponseWriter, r *http.Request) {
 		respondWithError(w, http.StatusBadRequest, err.Error(), err)
 		return
 	}
+	if err := h.v.Struct(productReq); err != nil {
+		respondWithError(w, http.StatusBadRequest, err.Error(), err)
+		return
+	}
+
 	ctx := context.Background()
 	product, err := h.db.CreateProduct(ctx, toProductRequest(productReq))
 	if err != nil {
@@ -89,12 +95,20 @@ func (h *Handler) ListProductsAdmin(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) DeleteProducts(w http.ResponseWriter, r *http.Request) {
-	var productIDsReq DelProductIdsReq
-	if err := decodeJson(r.Body, &productIDsReq); err != nil {
-		respondWithError(w, http.StatusBadRequest, err.Error(), err)
+	idsStr := r.URL.Query().Get("ids")
+	if idsStr == "" {
+		respondWithError(w, http.StatusBadRequest, "missing ids parameter", nil)
 		return
 	}
-	if err := h.db.DeleteProductsByID(context.Background(), productIDsReq.ProductIDs); err != nil {
+	parts := strings.Split(idsStr, ",")
+
+	var ids []int32
+	for _, part := range parts {
+		id, _ := strconv.Atoi(part)
+		ids = append(ids, int32(id))
+	}
+
+	if err := h.db.DeleteProductsByID(context.Background(), ids); err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error(), err)
 		return
 	}
@@ -103,15 +117,39 @@ func (h *Handler) DeleteProducts(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) UpdateProduct(w http.ResponseWriter, r *http.Request) {
+	productIDStr := r.PathValue("productID")
+	if productIDStr == "" {
+		respondWithError(w, http.StatusUnprocessableEntity, "productId in the path is necessary", fmt.Errorf(""))
+		return
+	}
+	productID, err := strconv.Atoi(productIDStr)
+	if err != nil {
+		respondWithError(w, http.StatusUnprocessableEntity, err.Error(), err)
+		return
+	}
 	var productReq ProductRequest
 	if err := decodeJson(r.Body, &productReq); err != nil {
 		respondWithError(w, http.StatusBadRequest, err.Error(), err)
 		return
 	}
-	if err := h.db.UpdateProductByID(context.Background(), database.UpdateProductByIDParams{}); err != nil {
+	if err := h.v.Struct(productReq); err != nil {
+		respondWithError(w, http.StatusBadRequest, err.Error(), err)
+		return
+	}
+	param := database.UpdateProductByIDParams{
+		Name:        productReq.Name,
+		Price:       *productReq.Price,
+		Discount:    productReq.Discount,
+		ID:          int32(productID),
+		CategoryID:  *productReq.CategoryID,
+		EnglishName: productReq.EnglishName,
+	}
+
+	product, err := h.db.UpdateProductByID(context.Background(), param)
+	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error(), err)
 		return
 	}
 
-	respondWithJSON(w, http.StatusNoContent, "")
+	respondWithJSON(w, http.StatusOK, toProductResponse(product))
 }

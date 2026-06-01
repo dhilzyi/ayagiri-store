@@ -58,16 +58,19 @@ WHERE
 -- name: ResetProductsRows :exec
 DELETE FROM products;
 
--- name: UpdateProductByID :exec
+-- name: UpdateProductByID :one
 UPDATE products
 SET
   updated_at = NOW(),
   name = $1,
   price = $2,
   category_id = $3,
-  discount = $4
+  discount = $4,
+  english_name = $5
 WHERE
-  id = $5;
+  id = $6
+RETURNING
+  *;
 
 -- name: GetProductByCategoryID :many
 SELECT
@@ -91,7 +94,9 @@ SELECT
   categories.name AS category_name
 FROM
   products
-  INNER JOIN categories ON products.category_id = categories.id;
+  INNER JOIN categories ON products.category_id = categories.id
+ORDER BY
+  products.id ASC;
 
 -- name: GetProductJoinByID :one
 SELECT

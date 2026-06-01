@@ -14,6 +14,10 @@ func (h *Handler) CreateCategory(w http.ResponseWriter, r *http.Request) {
 		respondWithError(w, http.StatusBadRequest, err.Error(), err)
 		return
 	}
+	if err := h.v.Struct(payloadCategory); err != nil {
+		respondWithError(w, http.StatusBadRequest, err.Error(), err)
+		return
+	}
 	params := database.CreateCategoryParams{
 		Name:        payloadCategory.Name,
 		EnglishName: payloadCategory.EnglishName,

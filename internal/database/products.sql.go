@@ -274,6 +274,8 @@ SELECT
 FROM
   products
   INNER JOIN categories ON products.category_id = categories.id
+ORDER BY
+  products.id ASC
 `
 
 type GetProductsJoinRow struct {
@@ -346,33 +348,49 @@ func (q *Queries) UpdateDiscount(ctx context.Context, arg UpdateDiscountParams) 
 	return err
 }
 
-const updateProductByID = `-- name: UpdateProductByID :exec
+const updateProductByID = `-- name: UpdateProductByID :one
 UPDATE products
 SET
   updated_at = NOW(),
   name = $1,
   price = $2,
   category_id = $3,
-  discount = $4
+  discount = $4,
+  english_name = $5
 WHERE
-  id = $5
+  id = $6
+RETURNING
+  id, created_at, updated_at, name, english_name, price, category_id, discount
 `
 
 type UpdateProductByIDParams struct {
-	Name       string
-	Price      int32
-	CategoryID int32
-	Discount   int32
-	ID         int32
+	Name        string
+	Price       int32
+	CategoryID  int32
+	Discount    int32
+	EnglishName string
+	ID          int32
 }
 
-func (q *Queries) UpdateProductByID(ctx context.Context, arg UpdateProductByIDParams) error {
-	_, err := q.db.Exec(ctx, updateProductByID,
+func (q *Queries) UpdateProductByID(ctx context.Context, arg UpdateProductByIDParams) (Product, error) {
+	row := q.db.QueryRow(ctx, updateProductByID,
 		arg.Name,
 		arg.Price,
 		arg.CategoryID,
 		arg.Discount,
+		arg.EnglishName,
 		arg.ID,
 	)
-	return err
+	var i Product
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.Name,
+		&i.EnglishName,
+		&i.Price,
+		&i.CategoryID,
+		&i.Discount,
+	)
+	return i, err
 }

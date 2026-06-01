@@ -75,9 +75,9 @@ func toProductRequest(p ProductRequest) database.CreateProductParams {
 	return database.CreateProductParams{
 		Name:        p.Name,
 		EnglishName: p.EnglishName,
-		Price:       p.Price,
+		Price:       *p.Price,
 		Discount:    p.Discount,
-		CategoryID:  p.CategoryID,
+		CategoryID:  ValOrDefault(p.CategoryID, int32(1)),
 	}
 }
 
@@ -113,9 +113,9 @@ func toBulkProducts(pList []ProductRequest) []database.BulkCreateProductsParams 
 			EnglishName: product.EnglishName,
 			CreatedAt:   timestamp,
 			UpdatedAt:   timestamp,
-			Price:       product.Price,
+			Price:       *product.Price,
 			Discount:    product.Discount,
-			CategoryID:  product.CategoryID,
+			CategoryID:  *product.CategoryID,
 		})
 	}
 
@@ -255,4 +255,20 @@ func toCategoriesResponse(categories []database.Category) []CategoryResponse {
 		})
 	}
 	return responses
+}
+
+func Val[T any](ptr *T) T {
+	if ptr == nil {
+		var zero T
+		return zero
+	}
+	return *ptr
+}
+
+// ValOrDefault returns the pointer's value, or a custom default if nil.
+func ValOrDefault[T any](ptr *T, defaultValue T) T {
+	if ptr == nil {
+		return defaultValue
+	}
+	return *ptr
 }

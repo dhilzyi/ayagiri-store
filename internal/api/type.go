@@ -7,16 +7,15 @@ import (
 )
 
 type ProductRequest struct {
-	ProductID   int32 `json:"id"`
-	Name        string
+	Name        string `json:"name" validate:"required"`
 	EnglishName string `json:"english_name"`
-	Price       int32
+	Price       *int32 `json:"price" validate:"required"`
 	Discount    int32
-	CategoryID  int32 `json:"category_id"`
+	CategoryID  *int32 `json:"category_id" validate:"required"`
 }
 
 type CategoryRequest struct {
-	Name        string
+	Name        string `json:"name" validate:"required"`
 	EnglishName string `json:"english_name"`
 }
 
@@ -45,8 +44,4 @@ type OrderItemsResponse struct {
 	Quantity      int32     `json:"quantity"`
 	ProductName   string    `json:"product_name"`
 	OrderComplete bool      `json:"order_complete"`
-}
-
-type DelProductIdsReq struct {
-	ProductIDs []int32 `json:"product_ids"`
 }

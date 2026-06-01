@@ -48,9 +48,11 @@ func main() {
 	mux.HandleFunc("GET /api/products", handler.ListProducts)
 	mux.HandleFunc("POST /api/products", handler.CreateProduct)
 	mux.HandleFunc("DELETE /api/products", handler.DeleteProducts)
+	mux.HandleFunc("PUT /api/products/{productID}", handler.UpdateProduct)
 	mux.HandleFunc("POST /api/products/bulk", handler.CreateProducts)
 
-	// Admin handler
+	// Admin handler. For database admin interface purposes
+	// Some of the query use JOIN method to others table
 	mux.HandleFunc("GET /api/admin/products", handler.ListProductsAdmin)
 	mux.HandleFunc("GET /api/admin/orders", handler.ListOrdersAdmin)
 	mux.HandleFunc("GET /api/admin/order_items", handler.ListOrderItemsAdmin)

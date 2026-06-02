@@ -48,3 +48,19 @@ Client fetch products data from backend -> Make an order POST to backend + Open 
 psql "postgres://postgres:postgres@localhost:5432/ayagiri?sslmode=disable"
 
 goose -dir ./sql/schema postgres "postgres://postgres:postgres@localhost:5432/ayagiri" up
+
+pg_dump "postgres://postgres:postgres@localhost:5432/ayagiri?sslmode=disable" -d ayagiri --data-only > seed.sql
+
+- Rebuild after code changed
+docker compose build
+- Run all compose except migrate
+docker compose up
+
+- Run compose detach only db
+docker compose up -d db
+- Run migration compose
+docker compose run --rm migrate
+- Inspect yaml
+docker compose config
+- Stop compose docker
+docker compose stop

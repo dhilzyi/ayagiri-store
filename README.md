@@ -3,12 +3,13 @@ This is a mock of POS Store, customers will order using tablet at their table. T
 
 ## Tech Stacks
 ### Front End
-I'm aiming simple interface throughout the project. No framework and fancy css. Just some basic vanilla JS
+I'm aiming simple interface throughout the project. No framework and fancy css.
 - HTML5
 - CSS
 - Javascript Vanilla
 ### Back End
 - Postgresql for database
+    - It use pgx driver
 - Golang 
     - sqlc :generating sql query automatically to golang program
     - goose :making schema version is easier
@@ -33,36 +34,32 @@ $ ./start.sh
     ├── go.mod
     ├── go.sum
     ├── internal
-    │   ├── api
-    │   │   ├── handler_categories.go
-    │   │   ├── handler.go
-    │   │   ├── handler_orders.go
-    │   │   ├── handler_products.go
-    │   │   ├── helpers.go
-    │   │   ├── helper_test.go
-    │   │   └── type.go
-    │   ├── database
-    │   │   ├── categories.sql.go
-    │   │   ├── copyfrom.go
-    │   │   ├── db.go
-    │   │   ├── models.go
-    │   │   ├── orders.sql.go
-    │   │   └── products.sql.go
+    │   ├── api - handler function and initial
+    │   ├── database - auto generated from .sql by sqlc program
     │   ├── domain
-    │   │   └── types.go
-    │   └── orders
-    │       ├── orders.go
-    │       └── types.go
-    ├── README.md
+    │   └── orders - orders manager module 
     ├── sql
-    │   ├── queries
+    │   ├── queries - raw sql queries for each table
     │   │   ├── categories.sql
     │   │   ├── orders.sql
     │   │   └── products.sql
-    │   └── schema
+    │   └── schema - schema migration version
     │       ├── 001_create_categories.sql
     │       ├── 002_create_products.sql
     │       └── 003_create_order.sql
-    ├── sqlc.yaml
-    ├── start.sh
+    ├── start.sh - simple script to run server
+```
+- Web
+```
+└── web
+    ├── customer - customer side clients
+    │   ├── css
+    │   ├── index.html
+    │   └── js
+    └── kitchen - kitchen side clients
+        ├── css
+        │   └── components
+        ├── index.html
+        ├── js
+        └── styles.css
 ```

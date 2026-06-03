@@ -243,16 +243,20 @@ func toOrderItemsResponse(orderItems []database.GetOrderItemsRow) []OrderItemsRe
 	return responses
 }
 
+func toCategoryResponse(c database.Category) CategoryResponse {
+	return CategoryResponse{
+		ID:          c.ID,
+		CreatedAt:   c.CreatedAt.Time,
+		UpdatedAt:   c.UpdatedAt.Time,
+		EnglishName: c.EnglishName,
+		Name:        c.Name,
+	}
+}
+
 func toCategoriesResponse(categories []database.Category) []CategoryResponse {
 	responses := make([]CategoryResponse, 0, len(categories))
 	for _, c := range categories {
-		responses = append(responses, CategoryResponse{
-			ID:          c.ID,
-			CreatedAt:   c.CreatedAt.Time,
-			UpdatedAt:   c.UpdatedAt.Time,
-			EnglishName: c.EnglishName,
-			Name:        c.Name,
-		})
+		responses = append(responses, toCategoryResponse(c))
 	}
 	return responses
 }

@@ -36,3 +36,8 @@ SELECT
   *
 FROM
   categories;
+
+-- name: DeleteCategoriesByID :exec
+DELETE FROM categories
+WHERE
+  id = ANY ($1::int[]);

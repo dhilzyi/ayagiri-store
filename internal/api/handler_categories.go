@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"strconv"
+	"strings"
 
 	"restaurant/internal/database"
 )
@@ -27,7 +29,7 @@ func (h *Handler) CreateCategory(w http.ResponseWriter, r *http.Request) {
 		respondWithError(w, http.StatusInternalServerError, err.Error(), err)
 		return
 	}
-	respondWithJSON(w, http.StatusCreated, category)
+	respondWithJSON(w, http.StatusCreated, toCategoryResponse(category))
 }
 
 func (h *Handler) ListCategories(w http.ResponseWriter, r *http.Request) {
@@ -56,4 +58,26 @@ func (h *Handler) CreateCategories(w http.ResponseWriter, r *http.Request) {
 	}
 
 	respondWithJSON(w, http.StatusCreated, result)
+}
+
+func (h *Handler) DeleteCategories(w http.ResponseWriter, r *http.Request) {
+	idsStr := r.URL.Query().Get("ids")
+	if idsStr == "" {
+		respondWithError(w, http.StatusBadRequest, "missing ids parameter", nil)
+		return
+	}
+	parts := strings.Split(idsStr, ",")
+
+	var ids []int32
+	for _, part := range parts {
+		id, _ := strconv.Atoi(part)
+		ids = append(ids, int32(id))
+	}
+
+	if err := h.db.DeleteCategoriesByID(context.Background(), ids); err != nil {
+		respondWithError(w, http.StatusInternalServerError, err.Error(), err)
+		return
+	}
+
+	respondWithJSON(w, http.StatusNoContent, "")
 }

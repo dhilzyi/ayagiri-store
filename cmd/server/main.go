@@ -59,6 +59,7 @@ func main() {
 	mux.HandleFunc("GET /api/admin/categories", handler.ListCategories)
 
 	mux.HandleFunc("POST /api/categories", handler.CreateCategory)
+	mux.HandleFunc("DELETE /api/categories", handler.DeleteCategories)
 	mux.HandleFunc("POST /api/categories/bulk", handler.CreateCategories)
 
 	// Customer client will send a request to this to create an order

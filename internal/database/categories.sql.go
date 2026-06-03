@@ -45,6 +45,17 @@ func (q *Queries) CreateCategory(ctx context.Context, arg CreateCategoryParams) 
 	return i, err
 }
 
+const deleteCategoriesByID = `-- name: DeleteCategoriesByID :exec
+DELETE FROM categories
+WHERE
+  id = ANY ($1::int[])
+`
+
+func (q *Queries) DeleteCategoriesByID(ctx context.Context, dollar_1 []int32) error {
+	_, err := q.db.Exec(ctx, deleteCategoriesByID, dollar_1)
+	return err
+}
+
 const deleteCategoryByID = `-- name: DeleteCategoryByID :one
 DELETE FROM categories
 WHERE

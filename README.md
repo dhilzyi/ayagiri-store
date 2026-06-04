@@ -30,33 +30,33 @@ $ ./start.sh
 ```
     ├── cmd
     │   └── server
-    │       └── main.go - entry file. adding the handler to the endpoints
+    │       └── main.go         - entry file. adding the handler to the endpoints
     ├── go.mod
     ├── go.sum
     ├── internal
-    │   ├── api - handler function and initial
-    │   ├── database - auto generated from .sql by sqlc program
+    │   ├── api                 - handler function and initial
+    │   ├── database            - auto generated from .sql by sqlc program
     │   ├── domain
-    │   └── orders - orders manager module 
+    │   └── orders              - orders manager module 
     ├── sql
-    │   ├── queries - raw sql queries for each table
+    │   ├── queries             - raw sql queries for each table
     │   │   ├── categories.sql
     │   │   ├── orders.sql
     │   │   └── products.sql
-    │   └── schema - schema migration version
+    │   └── schema              - schema migration version
     │       ├── 001_create_categories.sql
     │       ├── 002_create_products.sql
     │       └── 003_create_order.sql
-    ├── start.sh - simple script to run server
+    ├── start.sh                - simple script to run server
 ```
 - Web
 ```
 └── web
-    ├── customer - customer side clients
+    ├── customer        - customer side clients
     │   ├── css
     │   ├── index.html
     │   └── js
-    └── kitchen - kitchen side clients
+    └── kitchen         - kitchen side clients
         ├── css
         │   └── components
         ├── index.html

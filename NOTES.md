@@ -64,3 +64,15 @@ docker compose run --rm migrate
 docker compose config
 - Stop compose docker
 docker compose stop
+- Get inside shell of container
+docker exec -it <container-name> sh
+
+- dump database
+sudo -u postgres pg_dump ayagiri > backup.sql
+- dump data only database
+sudo -u postgres pg_dump -a <temp_restore> > <data_only.sql>
+- restore database
+sudo -u postgres psql -d ayagiri < backup.sql
+
+- Connect to psql
+sudo -u postgres psql

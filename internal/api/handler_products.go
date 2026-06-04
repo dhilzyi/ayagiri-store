@@ -145,11 +145,21 @@ func (h *Handler) UpdateProduct(w http.ResponseWriter, r *http.Request) {
 		EnglishName: productReq.EnglishName,
 	}
 
-	product, err := h.db.UpdateProductByID(context.Background(), param)
+	ctx := context.Background()
+	product, err := h.db.UpdateProductByID(ctx, param)
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error(), err)
 		return
 	}
 
-	respondWithJSON(w, http.StatusOK, toProductResponse(product))
+	productJoin, err := h.db.GetProductJoinByID(ctx, product.ID)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, err.Error(), err)
+		return
+	}
+
+	// TODO: Right now the category name is undefined in the front end
+	// Just make the mapping category name in the front end at this point. How many helpers function do i need?
+	// Kinda dilemma right now
+	respondWithJSON(w, http.StatusOK, toProductResponseJoin(productJoin))
 }

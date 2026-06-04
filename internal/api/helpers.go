@@ -60,6 +60,8 @@ func toProductResponse(p database.Product) domain.ProductResponse {
 		Price:       p.Price,
 		CategoryID:  p.CategoryID,
 		Discount:    p.Discount,
+		CreatedAt:   p.CreatedAt.Time,
+		UpdatedAt:   p.UpdatedAt.Time,
 	}
 }
 
@@ -131,9 +133,9 @@ func toProductResponseJoin(p database.GetProductJoinByIDRow) domain.ProductRespo
 			Price:       p.Price,
 			CategoryID:  p.CategoryID,
 			Discount:    p.Discount,
+			CreatedAt:   pgtype.Timestamp{Time: p.CreatedAt.Time, Valid: true},
+			UpdatedAt:   pgtype.Timestamp{Time: p.UpdatedAt.Time, Valid: true},
 		}),
-		CreatedAt:    p.CreatedAt.Time,
-		UpdatedAt:    p.UpdatedAt.Time,
 		CategoryName: p.CategoryName,
 	}
 }
@@ -150,9 +152,9 @@ func toProductResponsesAdmin(p []database.GetProductsJoinRow) []domain.ProductRe
 				Price:       inst.Price,
 				CategoryID:  inst.CategoryID,
 				Discount:    inst.Discount,
+				CreatedAt:   pgtype.Timestamp{Time: inst.CreatedAt.Time, Valid: true},
+				UpdatedAt:   pgtype.Timestamp{Time: inst.UpdatedAt.Time, Valid: true},
 			}),
-			CreatedAt:    inst.CreatedAt.Time,
-			UpdatedAt:    inst.UpdatedAt.Time,
 			CategoryName: inst.CategoryName,
 		})
 	}

@@ -4,7 +4,7 @@ CREATE TABLE categories (
   created_at TIMESTAMP NOT NULL,
   updated_at TIMESTAMP NOT NULL,
   name TEXT NOT NULL,
-  english_name TEXT NOT NULL
+  english_name TEXT
 );
 
 -- +goose Down

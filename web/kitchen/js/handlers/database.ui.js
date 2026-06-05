@@ -1,5 +1,7 @@
+import { fetchDatabase, fetchStatic } from "../api/kitchen-api.js";
 import { prettyTimestamp } from "../ui/helpers.js";
 import { getPageArray } from "./database.events.js";
+import { dbControl } from "./database.js";
 
 export function updateHeader(tableName) {
   const trHead = document.querySelector(".database-table thead tr");
@@ -73,6 +75,7 @@ export function addRows(data, lastRowNumber, tableName) {
   const tableBody = document.querySelector(".database-table tbody");
   const newRows = [];
   data.forEach((p) => {
+    console.log(p);
     let row;
     switch (tableName) {
       case "products":
@@ -215,4 +218,81 @@ export async function fillPopup(product) {
   const form = document.getElementById("popup-form");
   form.dataset.action = "update";
   form.dataset.id = product.id;
+}
+
+// TODO: Move templatecache to state or somewhere
+// Make it support multiple templates
+let templateCache = new Map();
+export async function loadAllTemplates() {
+  try {
+    const htmlText = await fetchStatic("templates/forms.html");
+
+    const tempDiv = document.createElement("div");
+    tempDiv.innerHTML = htmlText;
+
+    // Extract all <template> elements and cache them
+    const templates = tempDiv.querySelectorAll("template");
+
+    templates.forEach((template) => {
+      templateCache.set(template.id, template.content);
+    });
+
+    console.log(`Loaded ${templates.length} form templates successfully`);
+  } catch (error) {
+    console.error("Failed to load form templates:", error);
+  }
+}
+
+export async function loadCategories() {
+  const tableName = "categories";
+  try {
+    const data = await fetchDatabase(tableName);
+    dbControl.addDatabase(tableName, data);
+  } catch (e) {
+    console.error("Failed to load categories", e);
+  }
+}
+
+export function populateCategorySelect() {
+  const selectElement = document.querySelector('select[name="category_id"]');
+  if (!selectElement) {
+    console.warn("select element does not exist");
+    return;
+  }
+
+  selectElement.innerHTML =
+    '<option value="" disabled selected>カテゴリーを選択してください</option>';
+
+  const tableData = dbControl.getTableByName("categories");
+
+  tableData.forEach((cat) => {
+    const opt = document.createElement("option");
+    opt.value = cat.id;
+    opt.textContent = cat.name;
+    selectElement.appendChild(opt);
+  });
+}
+
+export async function swapFormInput(tableName) {
+  const container = document.querySelector("div.input-container");
+  if (!container) {
+    console.warn("container element does not exist");
+    return;
+  }
+
+  container.innerHTML = "";
+
+  const templateContent = templateCache.get(`form-${tableName}`);
+
+  if (!templateContent) {
+    container.innerHTML = `<p style="color:red">Template not found</p>`;
+    return;
+  }
+
+  const clone = templateContent.cloneNode(true);
+  container.appendChild(clone);
+
+  if (tableName === "products") {
+    populateCategorySelect();
+  }
 }

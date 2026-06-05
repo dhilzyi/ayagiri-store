@@ -1,8 +1,12 @@
 import { fetchDatabase, sendDeleteRows } from "../api/kitchen-api.js";
 import {
   addRows,
+  loadAllTemplates,
+  loadCategories,
+  populateCategorySelect,
   renderInformation,
   renderPaginationBar,
+  swapFormInput,
   updateHeader,
 } from "./database.ui.js";
 
@@ -23,7 +27,9 @@ class DbController {
   }
 
   addDatabase(key, value) {
-    this.table[key] = value;
+    if (!Object.hasOwn(this.table, key)) {
+      this.table[key] = value;
+    }
   }
 
   addRowToTable(data) {
@@ -108,6 +114,8 @@ class DbController {
     this.itemsPerPage = value;
   }
 
+  // TODO: Update products category id if current category id is being delete
+  // In sql it use ON DELETE SET TO DEFAULT 1
   async deleteRows() {
     const idsToDelete = getSelectedIDs();
 
@@ -131,6 +139,7 @@ class DbController {
     }
 
     this.renderPage(this.currentPage);
+    populateCategorySelect();
   }
 
   getDataByID(id) {
@@ -138,14 +147,15 @@ class DbController {
     if (index === -1) throw Error("no id is found in the table");
     return this.table[this.currentTable][index];
   }
+
   async updateDataByID(id, data) {
     const index = binarySearch(this.table[this.currentTable], id);
     if (index === -1) throw Error("no id is found in the table");
-    const current = this.table[this.currentTable][index];
-    current.category_id = data.category_id;
-    current.discount = data.discount;
-    current.name = data.name;
-    current.price = data.price;
+    this.table[this.currentTable][index] = data;
+  }
+
+  getTableByName(tableName) {
+    return this.table[tableName];
   }
 }
 
@@ -176,4 +186,9 @@ export async function initDatabase() {
   await initTableDbSelect();
   initBtnListen();
   initPopup();
+
+  await loadAllTemplates();
+  await loadCategories();
+
+  swapFormInput(dbControl.currentTable);
 }

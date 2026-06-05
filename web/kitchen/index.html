@@ -165,40 +165,7 @@
           data-action="add"
         >
           <!-- TODO: implement case for other table e.g categories -->
-          <div class="input-container">
-            <div>
-              <p class="required">商品名</p>
-              <input type="text" name="name" required placeholder="ラーメン" />
-            </div>
-            <div>
-              <p>英語名</p>
-              <input type="text" name="english_name" placeholder="Ramen" />
-            </div>
-            <div>
-              <p class="required">値段 <span>*円建て</span></p>
-              <input
-                type="number"
-                name="price"
-                required
-                min="0"
-                placeholder="800"
-              />
-            </div>
-            <div>
-              <p class="required">カテゴリー</p>
-              <select name="category_id" id="" required>
-                <option value="" disabled selected>
-                  カテゴリーを選択してください
-                </option>
-                <option value="1">おすすめ</option>
-                <option value="2">ドリンク</option>
-              </select>
-            </div>
-            <div>
-              <p>割引</p>
-              <input type="number" name="discount" placeholder="0" />
-            </div>
-          </div>
+          <div class="input-container"></div>
           <div class="info-post">
             <div class="submit-result">
               <!-- Will be filled dynamically according to the results -->

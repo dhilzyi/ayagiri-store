@@ -1,6 +1,6 @@
 import { dbControl } from "./database.js";
 import { sendNewRows, sendUpdateRows } from "../api/kitchen-api.js";
-import { fillPopup, renderResults } from "./database.ui.js";
+import { fillPopup, renderResults, swapFormInput } from "./database.ui.js";
 
 export async function initTableDbSelect() {
   const databaseSelect = document.getElementById("database-select");
@@ -42,10 +42,11 @@ export function initPopup() {
           const response = await sendNewRows(JSON.stringify(data), table);
 
           renderResults({ status: response.status }, "success");
-          dbControl.addRowToTable(await response.json());
+          const body = await response.json();
+          dbControl.addRowToTable(body);
         } catch (err) {
           const errData = (await err.body) || {};
-          console.log(err);
+          console.error(err);
           errData.status = err.status || 500;
           errData.message = err.error;
 
@@ -75,6 +76,7 @@ export function initPopup() {
   // DEBUG POP UP
   // modal.showModal();
 
+  let currentForm;
   document
     .querySelector(".action .right")
     .addEventListener("click", async (e) => {
@@ -82,6 +84,11 @@ export function initPopup() {
       if (!cardId) return;
       switch (cardId) {
         case "new-order-btn": {
+          if (currentForm != dbControl.currentTable) {
+            await swapFormInput(dbControl.currentTable);
+            currentForm = dbControl.currentTable;
+            form.dataset.table = dbControl.currentTable;
+          }
           modal.showModal();
           break;
         }

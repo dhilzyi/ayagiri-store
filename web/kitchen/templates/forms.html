@@ -1,0 +1,36 @@
+<!-- templates/forms.html -->
+<template id="form-products">
+  <div>
+    <p class="required">商品名</p>
+    <input type="text" name="name" required placeholder="ラーメン" />
+  </div>
+  <div>
+    <p>英語名</p>
+    <input type="text" name="english_name" placeholder="Ramen" />
+  </div>
+  <div>
+    <p class="required">値段 <span>*円建て</span></p>
+    <input type="number" name="price" required min="0" placeholder="800" />
+  </div>
+  <div>
+    <p class="required">カテゴリー</p>
+    <select name="category_id" required>
+      <!-- dynamically filled by real data from categories -->
+    </select>
+  </div>
+  <div>
+    <p>割引</p>
+    <input type="number" name="discount" placeholder="0" />
+  </div>
+</template>
+
+<template id="form-categories">
+  <div>
+    <p class="required">カテゴリー名</p>
+    <input type="text" name="name" required placeholder="焼き物" />
+  </div>
+  <div>
+    <p>英語名</p>
+    <input type="text" name="english_name" placeholder="Fried Food" />
+  </div>
+</template>

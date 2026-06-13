@@ -14,7 +14,7 @@ type Category struct {
 	CreatedAt   pgtype.Timestamp
 	UpdatedAt   pgtype.Timestamp
 	Name        string
-	EnglishName string
+	EnglishName pgtype.Text
 }
 
 type Order struct {
@@ -39,8 +39,8 @@ type Product struct {
 	CreatedAt   pgtype.Timestamp
 	UpdatedAt   pgtype.Timestamp
 	Name        string
-	EnglishName string
+	EnglishName pgtype.Text
 	Price       int32
 	CategoryID  int32
-	Discount    int32
+	Discount    pgtype.Int4
 }

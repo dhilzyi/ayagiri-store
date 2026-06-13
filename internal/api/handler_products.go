@@ -8,6 +8,8 @@ import (
 	"strings"
 
 	"restaurant/internal/database"
+
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 func (h *Handler) ListProducts(w http.ResponseWriter, r *http.Request) {
@@ -139,10 +141,10 @@ func (h *Handler) UpdateProduct(w http.ResponseWriter, r *http.Request) {
 	param := database.UpdateProductByIDParams{
 		Name:        productReq.Name,
 		Price:       *productReq.Price,
-		Discount:    productReq.Discount,
+		Discount:    pgtype.Int4{Valid: true, Int32: productReq.Discount},
 		ID:          int32(productID),
 		CategoryID:  *productReq.CategoryID,
-		EnglishName: productReq.EnglishName,
+		EnglishName: pgtype.Text{Valid: true, String: productReq.EnglishName},
 	}
 
 	ctx := context.Background()

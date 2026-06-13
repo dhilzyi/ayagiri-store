@@ -8,6 +8,8 @@ import (
 	"strings"
 
 	"restaurant/internal/database"
+
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 func (h *Handler) CreateCategory(w http.ResponseWriter, r *http.Request) {
@@ -22,7 +24,7 @@ func (h *Handler) CreateCategory(w http.ResponseWriter, r *http.Request) {
 	}
 	params := database.CreateCategoryParams{
 		Name:        payloadCategory.Name,
-		EnglishName: payloadCategory.EnglishName,
+		EnglishName: pgtype.Text{String: payloadCategory.EnglishName, Valid: true},
 	}
 	category, err := h.db.CreateCategory(context.Background(), params)
 	if err != nil {

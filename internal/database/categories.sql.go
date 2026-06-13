@@ -15,7 +15,7 @@ type BulkCreateCategoriesParams struct {
 	CreatedAt   pgtype.Timestamp
 	UpdatedAt   pgtype.Timestamp
 	Name        string
-	EnglishName string
+	EnglishName pgtype.Text
 }
 
 const createCategory = `-- name: CreateCategory :one
@@ -29,7 +29,7 @@ RETURNING
 
 type CreateCategoryParams struct {
 	Name        string
-	EnglishName string
+	EnglishName pgtype.Text
 }
 
 func (q *Queries) CreateCategory(ctx context.Context, arg CreateCategoryParams) (Category, error) {
@@ -82,6 +82,8 @@ SELECT
   id, created_at, updated_at, name, english_name
 FROM
   categories
+ORDER BY
+  id ASC
 `
 
 func (q *Queries) GetCategories(ctx context.Context) ([]Category, error) {
@@ -131,7 +133,7 @@ WHERE
 
 type UpdateCategoryByIDParams struct {
 	Name        string
-	EnglishName string
+	EnglishName pgtype.Text
 	ID          int32
 }
 

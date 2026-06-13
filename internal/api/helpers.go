@@ -56,10 +56,10 @@ func toProductResponse(p database.Product) domain.ProductResponse {
 	return domain.ProductResponse{
 		ID:          p.ID,
 		Name:        p.Name,
-		EnglishName: p.EnglishName,
+		EnglishName: p.EnglishName.String,
 		Price:       p.Price,
 		CategoryID:  p.CategoryID,
-		Discount:    p.Discount,
+		Discount:    p.Discount.Int32,
 		CreatedAt:   p.CreatedAt.Time,
 		UpdatedAt:   p.UpdatedAt.Time,
 	}
@@ -76,9 +76,9 @@ func toProductResponses(products []database.Product) []domain.ProductResponse {
 func toProductRequest(p ProductRequest) database.CreateProductParams {
 	return database.CreateProductParams{
 		Name:        p.Name,
-		EnglishName: p.EnglishName,
+		EnglishName: pgtype.Text{Valid: true, String: p.EnglishName},
 		Price:       *p.Price,
-		Discount:    p.Discount,
+		Discount:    pgtype.Int4{Valid: true, Int32: p.Discount},
 		CategoryID:  ValOrDefault(p.CategoryID, int32(1)),
 	}
 }
@@ -93,7 +93,7 @@ func toBulkCategories(cList []CategoryRequest) []database.BulkCreateCategoriesPa
 		}
 		bulks = append(bulks, database.BulkCreateCategoriesParams{
 			Name:        category.Name,
-			EnglishName: category.EnglishName,
+			EnglishName: pgtype.Text{String: category.EnglishName, Valid: true},
 			CreatedAt:   timestamp,
 			UpdatedAt:   timestamp,
 		})
@@ -112,11 +112,11 @@ func toBulkProducts(pList []ProductRequest) []database.BulkCreateProductsParams 
 		}
 		bulks = append(bulks, database.BulkCreateProductsParams{
 			Name:        product.Name,
-			EnglishName: product.EnglishName,
+			EnglishName: pgtype.Text{String: product.EnglishName, Valid: true},
 			CreatedAt:   timestamp,
 			UpdatedAt:   timestamp,
 			Price:       *product.Price,
-			Discount:    product.Discount,
+			Discount:    pgtype.Int4{Valid: true, Int32: product.Discount},
 			CategoryID:  *product.CategoryID,
 		})
 	}
@@ -250,7 +250,7 @@ func toCategoryResponse(c database.Category) CategoryResponse {
 		ID:          c.ID,
 		CreatedAt:   c.CreatedAt.Time,
 		UpdatedAt:   c.UpdatedAt.Time,
-		EnglishName: c.EnglishName,
+		EnglishName: c.EnglishName.String,
 		Name:        c.Name,
 	}
 }

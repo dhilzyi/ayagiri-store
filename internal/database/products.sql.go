@@ -15,10 +15,10 @@ type BulkCreateProductsParams struct {
 	CreatedAt   pgtype.Timestamp
 	UpdatedAt   pgtype.Timestamp
 	Name        string
-	EnglishName string
+	EnglishName pgtype.Text
 	Price       int32
 	CategoryID  int32
-	Discount    int32
+	Discount    pgtype.Int4
 }
 
 const createProduct = `-- name: CreateProduct :one
@@ -40,10 +40,10 @@ RETURNING
 
 type CreateProductParams struct {
 	Name        string
-	EnglishName string
+	EnglishName pgtype.Text
 	Price       int32
 	CategoryID  int32
-	Discount    int32
+	Discount    pgtype.Int4
 }
 
 func (q *Queries) CreateProduct(ctx context.Context, arg CreateProductParams) (Product, error) {
@@ -169,10 +169,10 @@ type GetProductJoinByIDRow struct {
 	CreatedAt    pgtype.Timestamp
 	UpdatedAt    pgtype.Timestamp
 	Name         string
-	EnglishName  string
+	EnglishName  pgtype.Text
 	Price        int32
 	CategoryID   int32
-	Discount     int32
+	Discount     pgtype.Int4
 	CategoryName string
 }
 
@@ -283,10 +283,10 @@ type GetProductsJoinRow struct {
 	CreatedAt    pgtype.Timestamp
 	UpdatedAt    pgtype.Timestamp
 	Name         string
-	EnglishName  string
+	EnglishName  pgtype.Text
 	Price        int32
 	CategoryID   int32
-	Discount     int32
+	Discount     pgtype.Int4
 	CategoryName string
 }
 
@@ -339,7 +339,7 @@ WHERE
 `
 
 type UpdateDiscountParams struct {
-	Discount int32
+	Discount pgtype.Int4
 	ID       int32
 }
 
@@ -367,8 +367,8 @@ type UpdateProductByIDParams struct {
 	Name        string
 	Price       int32
 	CategoryID  int32
-	Discount    int32
-	EnglishName string
+	Discount    pgtype.Int4
+	EnglishName pgtype.Text
 	ID          int32
 }
 

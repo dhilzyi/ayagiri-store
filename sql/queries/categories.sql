@@ -15,7 +15,7 @@ VALUES
 -- name: UpdateCategoryByID :exec
 UPDATE categories
 SET
-  update_at = NOW(),
+  updated_at = NOW(),
   name = $1,
   english_name = $2
 WHERE
@@ -35,7 +35,9 @@ DELETE FROM categories;
 SELECT
   *
 FROM
-  categories;
+  categories
+ORDER BY
+  id ASC;
 
 -- name: DeleteCategoriesByID :exec
 DELETE FROM categories

@@ -12,6 +12,14 @@ VALUES
 RETURNING
   *;
 
+-- name: GetUserByUsername :one
+SELECT
+  *
+FROM
+  users
+WHERE
+  username = $1;
+
 -- name: DeleteUser :exec
 DELETE FROM users
 WHERE
@@ -44,3 +52,9 @@ SET
   expires_at = $1
 WHERE
   token = $2;
+
+-- name: CountUsers :one
+SELECT
+  COUNT(id)
+FROM
+  users;

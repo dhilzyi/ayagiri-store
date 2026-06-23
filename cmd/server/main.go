@@ -9,6 +9,7 @@ import (
 
 	"restaurant/internal/api"
 	"restaurant/internal/database"
+	"restaurant/internal/middleware"
 
 	"github.com/jackc/pgx/v5"
 	"github.com/joho/godotenv"
@@ -41,11 +42,21 @@ func main() {
 		Handler: mux,
 	}
 
+	if err := bootstrapAdmin(dbQueries); err != nil {
+		log.Fatal(err)
+	}
+
 	// Static web files handler
 	mux.Handle("/", http.FileServer(http.Dir("./web/customer")))
 	mux.Handle("/kitchen/", http.StripPrefix("/kitchen", http.FileServer(http.Dir("./web/kitchen"))))
 
-	mux.HandleFunc("GET /api/products", handler.ListProducts)
+	mux.Handle("GET /api/products", middleware.Chain(
+		http.HandlerFunc(handler.ListProducts),
+		middleware.Logging,
+	))
+	mux.HandleFunc("POST /api/login", handler.Login)
+
+	// mux.HandleFunc("GET /api/products", handler.ListProducts)
 	mux.HandleFunc("POST /api/products", handler.CreateProduct)
 	mux.HandleFunc("DELETE /api/products", handler.DeleteProducts)
 	mux.HandleFunc("PUT /api/products/{productID}", handler.UpdateProduct)

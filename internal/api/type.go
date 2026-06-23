@@ -45,3 +45,8 @@ type OrderItemsResponse struct {
 	ProductName   string    `json:"product_name"`
 	OrderComplete bool      `json:"order_complete"`
 }
+
+type LoginRequest struct {
+	Username string `json:"username" validate:"required"`
+	Password string `json:"password" validate:"required"`
+}

@@ -44,3 +44,19 @@ type Product struct {
 	CategoryID  int32
 	Discount    pgtype.Int4
 }
+
+type Session struct {
+	Token     string
+	CreatedAt pgtype.Timestamp
+	ExpiresAt pgtype.Timestamp
+	UserID    pgtype.Int4
+}
+
+type User struct {
+	ID           int32
+	CreatedAt    pgtype.Timestamp
+	UpdatedAt    pgtype.Timestamp
+	Username     string
+	PasswordHash string
+	Role         string
+}

@@ -124,7 +124,7 @@ func (q *Queries) ResetCategoryRows(ctx context.Context) error {
 const updateCategoryByID = `-- name: UpdateCategoryByID :exec
 UPDATE categories
 SET
-  update_at = NOW(),
+  updated_at = NOW(),
   name = $1,
   english_name = $2
 WHERE

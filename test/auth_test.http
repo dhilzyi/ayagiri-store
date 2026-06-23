@@ -1,0 +1,8 @@
+### 
+
+POST {{url}}/api/login HTTP/1.1
+
+{
+  "password": "admin",
+  "username": "admin"
+}

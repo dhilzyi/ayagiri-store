@@ -53,8 +53,11 @@ pg_dump "postgres://postgres:postgres@localhost:5432/ayagiri?sslmode=disable" -d
 
 - Rebuild after code changed
 docker compose build
-- Run all compose except migrate
+
+- Run all compose up
 docker compose up
+- Reset compose. deleting containers and network. Use `-v ` for deleting with its volume
+docker compose down
 
 - Run compose detach only db
 docker compose up -d db

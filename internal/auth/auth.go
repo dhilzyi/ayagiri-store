@@ -3,6 +3,9 @@ package auth
 import (
 	"crypto/rand"
 	"encoding/hex"
+	"net/http"
+	"restaurant/internal/database"
+	"time"
 
 	"github.com/alexedwards/argon2id"
 )
@@ -38,4 +41,23 @@ func HashPassword(password string) (string, error) {
 	}
 
 	return hashed, nil
+}
+
+func ValidateSession(r *http.Request, db *database.Queries) (*database.Session, error) {
+	cookie, err := r.Cookie("session_token")
+	if err != nil {
+		return nil, err
+	}
+
+	session, err := db.GetSession(r.Context(), cookie.Value)
+	if err != nil {
+		return nil, err
+	}
+
+	if session.ExpiresAt.Time.Before(time.Now()) {
+		db.DeleteSession(r.Context(), cookie.Value)
+		return nil, err
+	}
+
+	return &session, nil
 }

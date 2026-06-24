@@ -3,8 +3,8 @@ package middleware
 import (
 	"log"
 	"net/http"
-	"time"
 
+	"restaurant/internal/auth"
 	"restaurant/internal/database"
 
 	"github.com/goccy/go-json"
@@ -48,24 +48,11 @@ func Test(next http.Handler) http.Handler {
 
 func (m *Middleware) Auth(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		cookie, err := r.Cookie("session_token")
+		_, err := auth.ValidateSession(r, m.db)
 		if err != nil {
 			respondWithError(w, http.StatusUnauthorized, "unauthorized", nil)
 			return
 		}
-
-		session, err := m.db.GetSession(r.Context(), cookie.Value)
-		if err != nil {
-			respondWithError(w, http.StatusUnauthorized, "unauthorized", nil)
-			return
-		}
-		if session.ExpiresAt.Time.Before(time.Now()) {
-			if err := m.db.DeleteSession(r.Context(), cookie.Value); err != nil {
-			}
-			respondWithError(w, http.StatusUnauthorized, "unauthorized", nil)
-			return
-		}
-
 		next.ServeHTTP(w, r)
 	})
 }

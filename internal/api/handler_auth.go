@@ -28,7 +28,7 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 	user, err := h.db.GetUserByUsername(ctx, payloadLogin.Username)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			respondWithError(w, http.StatusNotFound, "invalid credentials", err)
+			respondWithError(w, http.StatusUnauthorized, "invalid credentials", err)
 			return
 		}
 		respondWithError(w, http.StatusInternalServerError, err.Error(), err)
@@ -70,4 +70,32 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 	})
 
 	respondWithJSON(w, http.StatusCreated, nil)
+}
+
+func (h *Handler) Logout(w http.ResponseWriter, r *http.Request) {
+	cookie, err := r.Cookie("session_token")
+	if err != nil {
+		respondWithError(w, http.StatusUnauthorized, "unauthorized", nil)
+		return
+	}
+	if err := h.db.DeleteSession(r.Context(), cookie.Value); err != nil {
+		respondWithError(w, http.StatusInternalServerError, "failed to delete session id", err)
+		return
+	}
+	http.SetCookie(w, &http.Cookie{
+		Name:    "session_token",
+		Value:   "",
+		Expires: time.Unix(0, 0),
+		Path:    "/",
+	})
+	respondWithJSON(w, http.StatusOK, map[string]string{"message": "ok"})
+}
+
+func (h *Handler) Me(w http.ResponseWriter, r *http.Request) {
+	session, err := auth.ValidateSession(r, h.db)
+	if err != nil {
+		respondWithError(w, http.StatusUnauthorized, "unauthorized", nil)
+		return
+	}
+	respondWithJSON(w, http.StatusOK, session)
 }

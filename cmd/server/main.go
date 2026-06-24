@@ -54,7 +54,8 @@ func main() {
 		http.HandlerFunc(handler.ListProducts),
 		middleware.Logging,
 	))
-	mux.HandleFunc("POST /api/login", handler.Login)
+	mux.HandleFunc("POST /api/auth/login", handler.Login)
+	mux.HandleFunc("GET /api/auth/me", handler.Me)
 
 	// mux.HandleFunc("GET /api/products", handler.ListProducts)
 	mux.HandleFunc("POST /api/products", handler.CreateProduct)

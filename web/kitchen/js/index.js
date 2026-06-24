@@ -1,6 +1,7 @@
 import { initListeners, startGlobalTimer } from "./ui/order_status.ui.js";
 import { initSSEListen } from "./api/kitchen-api.js";
 import { initDatabase } from "./handlers/database.js";
+import { checkAuth } from "./auth.js";
 
 function initMainListeners() {
   document.querySelector(".main-header").addEventListener("click", (e) => {
@@ -18,8 +19,18 @@ function initMainListeners() {
   });
 }
 
-initMainListeners();
-initListeners();
-initDatabase();
-initSSEListen();
-startGlobalTimer();
+function init() {
+  initMainListeners();
+  initListeners();
+  initDatabase();
+  initSSEListen();
+  startGlobalTimer();
+}
+
+const authed = await checkAuth();
+if (authed) {
+  document.body.style.display = "block";
+  init();
+} else {
+  window.location.href = "/kitchen/login.html";
+}

@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"log"
 	"net/http"
 	"restaurant/internal/auth"
 	"restaurant/internal/database"
@@ -97,5 +98,12 @@ func (h *Handler) Me(w http.ResponseWriter, r *http.Request) {
 		respondWithError(w, http.StatusUnauthorized, "unauthorized", nil)
 		return
 	}
-	respondWithJSON(w, http.StatusOK, session)
+	if err := h.db.UpdateExpireSession(r.Context(), database.UpdateExpireSessionParams{
+		ExpiresAt: pgtype.Timestamp{Valid: true, Time: session.ExpiresAt.Time.Add(EXPIRE_TIME)},
+		Token:     session.Token,
+	}); err != nil {
+		log.Printf("failed to update session expired time: %s\n", session.Token)
+	}
+
+	respondWithJSON(w, http.StatusOK, session.Token)
 }

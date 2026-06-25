@@ -3,6 +3,7 @@ package auth
 import (
 	"crypto/rand"
 	"encoding/hex"
+	"fmt"
 	"net/http"
 	"restaurant/internal/database"
 	"time"
@@ -55,8 +56,10 @@ func ValidateSession(r *http.Request, db *database.Queries) (*database.Session, 
 	}
 
 	if session.ExpiresAt.Time.Before(time.Now()) {
-		db.DeleteSession(r.Context(), cookie.Value)
-		return nil, err
+		if err := db.DeleteSession(r.Context(), cookie.Value); err != nil {
+			return nil, fmt.Errorf("failed to delete expired session")
+		}
+		return nil, fmt.Errorf("session id is expired")
 	}
 
 	return &session, nil

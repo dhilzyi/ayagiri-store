@@ -75,7 +75,6 @@ export function addRows(data, lastRowNumber, tableName) {
   const tableBody = document.querySelector(".database-table tbody");
   const newRows = [];
   data.forEach((p) => {
-    console.log(p);
     let row;
     switch (tableName) {
       case "products":
@@ -85,9 +84,9 @@ export function addRows(data, lastRowNumber, tableName) {
 		<td>${lastRowNumber}</td>
 		<td class="product-id">${p.id}</td>
 		<td class="product-name">${p.name}</td>
-		<td>${p.price}</td>
+		<td class="price">${p.price}</td>
 		<td class="discount">${p.discount}</td>
-		<td class="category">${p.category_name}</td>
+		<td class="category">${dbControl.getCategoryNameByID(p.category_id)}</td>
 		<td class="created-at">${prettyTimestamp(p.created_at)}</td>
 		<td class="updated-at">${prettyTimestamp(p.updated_at)}</td>
 	</tr>

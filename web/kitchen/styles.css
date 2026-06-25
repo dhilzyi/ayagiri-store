@@ -1,9 +1,16 @@
-/* Add this to the absolute top of your style.css file */
 *,
 *::before,
 *::after {
   box-sizing: border-box;
 }
+
+:root {
+  --color-border: #e0e0e0;
+  --color-muted: #888;
+  --color-success: #2a7a2a;
+  --color-warning: #a05c00;
+}
+
 body {
   display: flex;
   justify-content: center;
@@ -29,7 +36,6 @@ body {
 
 section {
   width: 100%;
-  display: flex;
 
   flex-direction: column;
   display: none;
@@ -38,27 +44,6 @@ section {
 .row-1 {
   display: flex;
   flex-direction: row;
-}
-
-.current-status {
-  width: 70%;
-  background-color: red;
-  display: flex;
-  flex-direction: column;
-  text-align: center;
-  align-items: center;
-}
-
-.current-status-body {
-  display: flex;
-  flex-direction: row;
-  gap: 50px;
-}
-
-.today-turnover {
-  width: 30%;
-  background-color: gray;
-  text-align: center;
 }
 
 section.active {

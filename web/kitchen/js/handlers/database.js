@@ -157,6 +157,14 @@ class DbController {
   getTableByName(tableName) {
     return this.table[tableName];
   }
+
+  getCategoryNameByID(id) {
+    const catName = "categories";
+    const cat = this.table[catName];
+    const index = binarySearch(cat, id);
+    if (index == -1) return;
+    return cat[index].name;
+  }
 }
 
 // It is guarantee the table is always in order because i use the query ASC
@@ -183,12 +191,12 @@ function binarySearch(arr, val) {
 export const dbControl = new DbController();
 
 export async function initDatabase() {
+  await loadCategories();
   await initTableDbSelect();
   initBtnListen();
   initPopup();
 
   await loadAllTemplates();
-  await loadCategories();
 
   swapFormInput(dbControl.currentTable);
 }

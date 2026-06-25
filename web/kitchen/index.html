@@ -5,11 +5,12 @@
     <title>Ayagiri Kitchen</title>
 
     <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="./css/components/dashboard.css" />
     <link rel="stylesheet" href="./css/components/order-status.css" />
     <link rel="stylesheet" href="./css/components/database.css" />
     <link rel="stylesheet" href="./css/components/popup.css" />
   </head>
-  <body>
+  <body style="display: none">
     <header class="main-header">
       <h2 data-section-id="1">ダッシュボード</h2>
       <h2 data-section-id="2">注文ステータス</h2>
@@ -18,24 +19,42 @@
       <h2>設定</h2>
     </header>
 
-    <section class="dashboard" data-section-id="1">
-      <div class="row-1">
-        <div class="current-status">
-          <h3>現在のステータス</h3>
-          <div class="current-status-body">
-            <div class="current-status-orders">
-              <h4>注文の数</h4>
-              <h4>4</h4>
-            </div>
-            <div class="current-status-tablet">
-              <h4>オンラインのタブレット</h4>
-              <h4>2</h4>
-            </div>
-          </div>
+    <section class="dashboard active" data-section-id="1">
+      <div class="dashboard-grid">
+        <div class="main-card">
+          <p class="card-label">使用中の席</p>
+          <p class="card-value">8/12<span class="card-value-unit">席</span></p>
+          <p class="card-status">かなり</p>
         </div>
-        <div class="today-turnover">
-          <h3>今日の売り上げ</h3>
-          <h3>￥５０００</h3>
+        <div class="main-card">
+          <p class="card-label">今日のオーダー数</p>
+          <p class="card-value">40 <span class="card-value-unit">件</span></p>
+          <p class="card-status" style="color: var(--color-warning)">
+            4 調理中
+          </p>
+        </div>
+        <div class="main-card">
+          <p class="card-label">平均調理時間</p>
+          <p class="card-value">8<span class="card-value-unit">分</span></p>
+          <p class="card-status">昨日と同じ</p>
+        </div>
+        <div class="main-card">
+          <p class="card-label">今日の売上</p>
+          <p class="card-value">¥24,000</p>
+          <p class="card-status" style="color: var(--color-success)">
+            昨日比 +12%
+          </p>
+        </div>
+      </div>
+
+      <div class="dashboard-row">
+        <div class="active-orders">
+          <p class="section-label">調理中のオーダー</p>
+          <!-- list of active orders with elapsed time -->
+        </div>
+        <div class="popular-items">
+          <p class="section-label">本日の人気商品</p>
+          <!-- ranked product list -->
         </div>
       </div>
     </section>
@@ -81,7 +100,7 @@
     </section>
 
     <!-- DATABASE SECTIONS-->
-    <section class="database active" data-section-id="3">
+    <section class="database" data-section-id="3">
       <div class="database-body">
         <!-- <div class="database-header"> -->
         <!--   <h2>商品</h2> -->
